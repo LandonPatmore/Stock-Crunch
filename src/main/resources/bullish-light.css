@@ -1,0 +1,71 @@
+#anchorpane {
+    -fx-background-color: #dcdde1;
+}
+
+#split {
+    -fx-background-color: #dcdde1;
+}
+
+#topBar {
+    -fx-background-color: #D7D8DC;
+}
+
+#sidedrawervbox {
+    -fx-background-color: #D7D8DC;
+}
+
+#sidedrawerlistview {
+    -fx-background-color: #D7D8DC;
+}
+
+.list-view {
+    -fx-background-color: #D7D8DC;
+}
+
+.list-view .list-cell {
+    -fx-background-color: #D7D8DC;
+    -fx-text-fill: gray;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #dcdde1;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #dcdde1;
+}
+
+
+.jfx-hamburger StackPane {
+    -fx-background-color: #218c74;
+}
+
+
+.list-view .label {
+    -fx-text-fill: gray;
+}
+
+.jfx-rippler {
+    -jfx-rippler-fill: #2ecc71;
+}
+
+.jfx-progress-bar > .track, .jfx-progress-bar > .bar {
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+}
+
+.jfx-progress-bar > .bar {
+    -fx-background-color: #ff931e;
+}
+
+.jfx-progress-bar > .track {
+    -fx-background-color: #E0E0E0;
+}
+
+.chart-title {
+    -fx-text-fill: #ebe5e5;
+}
+
+.jfx-button {
+    -fx-text-fill: #218c74;
+}
