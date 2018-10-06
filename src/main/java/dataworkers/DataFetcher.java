@@ -3,6 +3,9 @@ package dataworkers;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.parser.Parser;
 
 public class DataFetcher {
 
@@ -18,11 +21,11 @@ public class DataFetcher {
         }
     }
 
-    public static String xmlGrabber(String URL) {
+    public static Document xmlGrabber(String URL) {
         try {
             final HttpResponse<String> response = Unirest.get(URL).asString();
 
-            return response.getBody();
+            return Jsoup.parse(response.getBody(), "", Parser.xmlParser());
         } catch (Exception e){
             System.out.println(e.getLocalizedMessage());
             return null;

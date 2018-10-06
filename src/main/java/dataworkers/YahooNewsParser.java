@@ -9,7 +9,7 @@ public class YahooNewsParser {
 
     static String URL = "http://finance.yahoo.com/rss/headline?s=";
 
-    public static String getXml(ArrayList<String> tickers){
+    /*public static String getXml(ArrayList<String> tickers){
         String ticker = "";
         for(String t : tickers)
             ticker += t + ",";
@@ -26,8 +26,8 @@ public class YahooNewsParser {
     public static Document getRss(String ticker){
         URL += ticker;
         return Jsoup.parse(DataFetcher.xmlGrabber(URL));
-    }
-
+    }*/
+/*
     public static String getTitle(String ticker){
         return getRss(ticker).title();
     }
@@ -42,7 +42,7 @@ public class YahooNewsParser {
 
     public static String getHead(String ticker){
         return getRss(ticker).head().toString();
-    }
+    }*/
 
 }
 
