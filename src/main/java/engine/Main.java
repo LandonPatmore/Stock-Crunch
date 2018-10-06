@@ -1,5 +1,8 @@
 package engine;
 
+import dataobjects.MarketWatch;
+import dataworkers.DataFetcher;
+import dataworkers.MarketWatchParser;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
