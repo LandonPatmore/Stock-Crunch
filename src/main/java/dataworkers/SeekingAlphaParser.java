@@ -1,5 +1,6 @@
 package dataworkers;
 
+import dataobjects.Article;
 import org.json.XML;
 import org.jsoup.Jsoup;
 
@@ -17,17 +18,17 @@ import java.util.ArrayList;
 
 public class SeekingAlphaParser {
     //have to add (name).xml to end
-    static String url = "https://seekingalpha.com/api/sa/combined/";
+    static String url = "http://seekingalpha.com/api/sa/combined/";
 
     public static Document getXML(String url){
-        return DataFetcher.xmlGrabber("https://seekingalpha.com/api/sa/combined/" + url + ".xml");
+        return DataFetcher.xmlGrabber("http://seekingalpha.com/api/sa/combined/" + url + ".xml");
     }
 
     public static ArrayList<String> articleFinder(String url) throws ParserConfigurationException, IOException, SAXException {
         try {
             ArrayList<String> newsLinks = new ArrayList<>();
 
-            Document xml = DataFetcher.xmlGrabber("https://seekingalpha.com/api/sa/combined/" + url + ".xml");
+            Document xml = DataFetcher.xmlGrabber("http://seekingalpha.com/api/sa/combined/" + url + ".xml");
             System.out.println(xml);
 
            /* Document document = Jsoup.parse(xml, "", Parser.xmlParser());*/
@@ -50,9 +51,30 @@ public class SeekingAlphaParser {
         return null;
     }
 
+
+    public static ArrayList<Article> articleMaker(ArrayList<String> urls){
+        try {
+            ArrayList<Article> articles = new ArrayList<>();
+            Document doc;
+            for (String s : urls) {
+                doc = Jsoup.connect(s).userAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36").get();
+                Elements el = doc.getElementsByAttribute("meta");
+                for(Element e: el){
+                    e.text();
+                }
+            }
+
+
+            return articles;
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static void main(String[]args){
         try {
-            SeekingAlphaParser.articleFinder("IBM");
+            SeekingAlphaParser.articleMaker(SeekingAlphaParser.articleFinder("IBM"));
         }catch (Exception e){
 
         }
