@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXDrawer?>
 <?import com.jfoenix.controls.JFXHamburger?>
@@ -13,15 +14,15 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" style="-fx-background-color: #353b48;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeController">
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.HomeController">
    <children>
       <JFXDrawer fx:id="filtersDrawer" defaultDrawerSize="200.0" direction="TOP" layoutY="50.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="1000.0">
          <effect>
             <DropShadow height="2.5" radius="1.375" spread="0.25" width="5.0" />
          </effect>
       </JFXDrawer>
-      <SplitPane fx:id="mainSplitPane" layoutY="55.0" prefHeight="545.0" prefWidth="1000.0" style="-fx-background-color: #353b48;" />
-      <GridPane fx:id="topBarGridPane" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="1000.0" scaleShape="false" style="-fx-background-color: #2f3640;">
+      <SplitPane fx:id="mainSplitPane" layoutY="55.0" prefHeight="545.0" prefWidth="1000.0" />
+      <GridPane fx:id="topBarGridPane" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="1000.0" scaleShape="false">
          <columnConstraints>
             <ColumnConstraints fx:id="gridPaneLeft" halignment="LEFT" hgrow="ALWAYS" maxWidth="307.33331298828125" minWidth="10.0" prefWidth="304.6666564941406" />
             <ColumnConstraints fx:id="gridPaneCenter" halignment="CENTER" hgrow="ALWAYS" maxWidth="366.66668701171875" minWidth="10.0" prefWidth="366.66668701171875" />
@@ -31,9 +32,9 @@
             <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <JFXButton fx:id="filtersButton" alignment="CENTER_RIGHT" ripplerFill="#2ecc71" stylesheets="@dark-bullish.css" text="Settings" textFill="#718093" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
+            <JFXButton fx:id="filtersButton" alignment="CENTER_RIGHT" ripplerFill="BLACK" text="Settings" GridPane.columnIndex="2" GridPane.halignment="RIGHT">
                <graphic>
-                  <FontAwesomeIconView fill="#2ecc71" glyphName="GEAR" size="14" />
+                  <FontAwesomeIconView fx:id="gearIcon" fill="#909090" glyphName="GEAR" size="14" />
                </graphic>
                <font>
                   <Font size="14.0" />
@@ -57,7 +58,7 @@
             <DropShadow height="2.5" radius="1.375" spread="0.25" width="5.0" />
          </effect>
       </JFXDrawer>
-      <JFXHamburger fx:id="hamburger" alignment="CENTER_LEFT" layoutX="12.5" layoutY="12.5" prefHeight="25.0" prefWidth="25.0" stylesheets="@dark-bullish.css">
+      <JFXHamburger fx:id="hamburger" alignment="CENTER_LEFT" layoutX="12.5" layoutY="12.5" prefHeight="25.0" prefWidth="25.0">
          <effect>
             <DropShadow color="#0000007f" height="5.0" radius="2.0" spread="0.25" width="5.0" />
          </effect>

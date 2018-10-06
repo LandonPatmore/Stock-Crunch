@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -54,6 +55,30 @@ public class HomeController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        //Load side Drawer FXML
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Side_Drawer.fxml"));
+            VBox box = loader.load();
+            sideDrawerController = loader.getController();
+            sideDrawerController.dashboardDrawerVBox.maxHeightProperty().bind(anchorPane.heightProperty());
+            sideDrawer.setSidePane(box);
+        } catch (IOException ex) {
+            Logger.getLogger(SideDrawerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        String css = this.getClass().getClassLoader().getResource("bullish-light.css").toExternalForm();
+        anchorPane.getStylesheets().add(css);
+        mainSplitPane.getStylesheets().add(css);
+        topBarGridPane.getStylesheets().add(css);
+        sideDrawerController.dashboardDrawerVBox.getStylesheets().add(css);
+        sideDrawerController.listView.getStylesheets().add(css);
+
+        anchorPane.setId("anchorpane");
+        mainSplitPane.setId("split");
+        topBarGridPane.setId("topBar");
+        sideDrawerController.dashboardDrawerVBox.setId("sidedrawervbox");
+        sideDrawerController.listView.setId("sidedrawerlistview");
+
         topBarGridPane.prefWidthProperty().bind(anchorPane.widthProperty());
         mainSplitPane.prefWidthProperty().bind(anchorPane.widthProperty());
         mainSplitPane.prefHeightProperty().bind(anchorPane.heightProperty());
@@ -64,16 +89,6 @@ public class HomeController implements Initializable {
         sideDrawer.setVisible(false);
         //Allows you to click through the drawer if it's not visible (so we set it invisible when it's not open)
         sideDrawer.setPickOnBounds(false);
-
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Side_Drawer.fxml"));
-            VBox box = loader.load();
-            sideDrawerController = loader.getController();
-            sideDrawerController.dashboardDrawerVBox.maxHeightProperty().bind(anchorPane.heightProperty());
-            sideDrawer.setSidePane(box);
-        } catch (IOException ex) {
-            Logger.getLogger(SideDrawerController.class.getName()).log(Level.SEVERE, null, ex);
-        }
 
         HamburgerBasicCloseTransition basicCloseTransition = new HamburgerBasicCloseTransition(hamburger);
         basicCloseTransition.setRate(-1);
