@@ -18,11 +18,10 @@ repositories {
 
 dependencies {
     compile 'com.jfoenix:jfoenix:8.0.7' // Java 8
-    compile 'de.jensd:fontawesomefx-commons:8.15'
-    compile 'de.jensd:fontawesomefx-icons525:3.0.0-4'
-    compile 'de.jensd:fontawesomefx-fontawesome:4.7.0-5'
+    compile group: 'de.jensd', name: 'fontawesomefx', version: '8.9'
     compile group: 'com.mashape.unirest', name: 'unirest-java', version: '1.4.9'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
+    compile group: 'joda-time', name: 'joda-time', version: '2.10'
 }
 
 apply plugin: 'javafx-gradle-plugin'
