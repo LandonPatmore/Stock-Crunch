@@ -21,7 +21,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(400);
         primaryStage.setMinWidth(600);
         primaryStage.setTitle("Data Mea");
-        Pane root = FXMLLoader.load(getClass().getClassLoader().getResource("Home.fxml"));
+        Pane root = FXMLLoader.load(getClass().getResource("/Home.fxml"));
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
         primaryStage.show();
