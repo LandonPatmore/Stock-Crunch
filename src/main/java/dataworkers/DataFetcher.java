@@ -34,7 +34,12 @@ public class DataFetcher {
         }
     }
 
-    public static Document htmlGrabber(String url) throws IOException {
-        return Jsoup.connect(url).get();
+    public static Document htmlGrabber(String url) {
+        try {
+            return Jsoup.connect(url).get();
+        } catch (IOException e){
+            System.out.println(e.getLocalizedMessage());
+            return null;
+        }
     }
 }

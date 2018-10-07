@@ -27,24 +27,19 @@ public class ArticleListFetcher {
         final ArrayList<Article> articleList = new ArrayList<>();
         final Document xml = DataFetcher.xmlGrabber(providerURL.getValue() + typeOfFeed.getValue());
 
-        try {
-            if (xml != null) {
-                final Elements articles = xml.select("channel").get(0).select("item");
+        if (xml != null) {
+            final Elements articles = xml.select("channel").get(0).select("item");
 
-                for (Element e : articles) {
-                    final String title = e.select("title").first().text();
-                    final URL link = new URL(e.select("link").first().text());
-                    final DateTime pubDate = formatter.parseDateTime(e.select("pubDate").first().text());
-                    System.out.println(e.select("description").first().text());
+            for (Element e : articles) {
+                final String title = e.select("title").first().text();
+                final String link = e.select("link").first().text();
+                final DateTime pubDate = formatter.parseDateTime(e.select("pubDate").first().text());
+                System.out.println(e.select("description").first().text());
 
-                    articleList.add(new Article(title, link, pubDate, provider));
-                }
+                articleList.add(new Article(title, link, pubDate, provider));
             }
-
-            return articleList;
-        } catch (MalformedURLException e) {
-            System.out.println(e.getLocalizedMessage());
-            return null;
         }
+
+        return articleList;
     }
 }

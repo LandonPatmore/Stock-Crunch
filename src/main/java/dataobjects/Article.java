@@ -10,7 +10,7 @@ public class Article {
      * Initial Data
      */
     private final String title;
-    private final URL provider;
+    private final String provider;
     private final DateTime dateTime;
     private final FeedProvider providerName;
 
@@ -24,7 +24,7 @@ public class Article {
     // TODO: Sentiment analysis object added later
 
     // TODO: Get images from article as well
-    public Article(String title, URL provider, DateTime dateTime, FeedProvider providerName) {
+    public Article(String title, String provider, DateTime dateTime, FeedProvider providerName) {
         this.title = title;
         this.dateTime = dateTime;
         this.provider = provider;
@@ -63,11 +63,11 @@ public class Article {
         return dateTime;
     }
 
-    public URL getLink() {
+    public String getLink() {
         return provider;
     }
 
-    public URL getProvider() {
+    public String getProvider() {
         return provider;
     }
 

@@ -7,7 +7,5 @@ import java.util.ArrayList;
 
 public class YahooArticleParser {
 
-    public static
-
 }
 
