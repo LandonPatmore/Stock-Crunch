@@ -3,8 +3,15 @@ package controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
+import dataobjects.RSSFeedProvider;
+import dataworkers.DataFetcher;
+import dataworkers.RSSFeedFetcher;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -65,8 +72,14 @@ public class SideDrawerController implements Initializable {
     static class deletableCell extends ListCell<String> {
         HBox hbox = new HBox();
         JFXButton text = new JFXButton( "");
-        //Button button = new Button("Del");
         FontAwesomeIconView thumbsDownIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+        private static BooleanProperty openedSideDrawer = new SimpleBooleanProperty(false);
+        private String bullish = this.getClass().getClassLoader().getResource("favorites-bullish.css").toExternalForm();
+        private String bearish = this.getClass().getClassLoader().getResource("favorites-bearish.css").toExternalForm();
+
+        public static void setOpenedSideDrawer(Boolean x){
+            openedSideDrawer.setValue(x);
+        }
 
         public deletableCell() {
             super();
@@ -77,7 +90,23 @@ public class SideDrawerController implements Initializable {
             text.setAlignment(Pos.CENTER_LEFT);
             text.setMaxWidth(163);
             text.setPrefWidth(163);
+            //text.getStylesheets().add(bearish);
             thumbsDownIcon.setOnMouseClicked(MouseEvent -> getListView().getItems().remove(getItem()));
+
+            openedSideDrawer.addListener(new ChangeListener<Boolean>() {
+                @Override
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                    if (newValue) {
+                        if (SideDrawerController.isBullish(text.getText())){
+                            text.getStylesheets().clear();
+                            text.getStylesheets().add(bullish);
+                        } else {
+                            text.getStylesheets().clear();
+                            text.getStylesheets().add(bearish);
+                        }
+                    }
+                }
+            });
         }
 
         @Override

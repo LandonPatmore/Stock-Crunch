@@ -12,7 +12,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import parsers.MarketWatchArticleParser;
-
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -32,7 +31,7 @@ public class Main extends Application {
         primaryStage.show();
 
         //demo of sentiment analysis
-        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.MARKET_WATCH,
+        /*ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.MARKET_WATCH,
                 RSSFeedProvider.MARKET_WATCH_FEED, MarketWatchRSSFeed.BREAKING_NEWS_BULELTINS.getValue());
         for(Article a : articles){
             MarketWatchArticleParser.getArticleData(a);
@@ -41,8 +40,6 @@ public class Main extends Application {
                 System.out.println(a.getBody().text());
                 System.out.println(a.getSentiment());
             }
-        }
-
-        //DashboardLogin.setStage(primaryStage);
+        }*/
     }
 }
