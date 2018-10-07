@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXToggleButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import model.Settings;
 
@@ -31,8 +30,6 @@ public class SettingsDrawerController implements Initializable  {
         if (!lightToggle.isSelected()){
             lightToggle.setSelected(true);
         }
-
-        Settings.setTheme("light");
     }
 
     @FXML
@@ -44,8 +41,6 @@ public class SettingsDrawerController implements Initializable  {
         if (!lightToggle.isSelected()){
             lightToggle.setSelected(true);
         }
-
-        Settings.setTheme("light");
     }
 
     @FXML
@@ -57,8 +52,6 @@ public class SettingsDrawerController implements Initializable  {
         if (!darkToggle.isSelected()){
             darkToggle.setSelected(true);
         }
-
-        Settings.setTheme("dark");
     }
 
     @FXML
@@ -70,13 +63,17 @@ public class SettingsDrawerController implements Initializable  {
         if (!darkToggle.isSelected()){
             darkToggle.setSelected(true);
         }
-
-        Settings.setTheme("dark");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
-
+        if("dark".equals(Settings.getTheme())){
+            darkToggle.setSelected(true);
+            lightToggle.setSelected(false);
+        } else {
+            lightToggle.setSelected(true);
+            darkToggle.setSelected(false);
+        }
     }
 
 }
