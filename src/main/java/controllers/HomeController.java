@@ -564,41 +564,49 @@ public class HomeController implements Initializable {
 
 
     private void load(String url){
-        links.getChildren().clear();
-        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue()+url);
-        Hyperlink temp;
-        //links.getChildren().add(temp);
-        for(int i = 0; i < 5; i++){
-            NasdaqArticleParser.getArticleData(articles.get(i));
-            SentimentAnalyzer.getSentimentScore(articles.get(i));
-            final Article current = articles.get(i);
-            temp = new Hyperlink(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
-            temp.setOnAction((ActionEvent event) -> {
-                Hyperlink h = (Hyperlink) event.getTarget();
-                String s = current.getLink();
-                hs.showDocument(s);
-                event.consume();
-            });
-            if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
-                temp.setText(temp.getText());
-                temp.setTextFill(Paint.valueOf("green"));
-            }
-            else{
-                temp.setText(temp.getText());
-                temp.setTextFill(Paint.valueOf("red"));
-            }
-            links.getChildren().add(temp);
-        }
-        Label test;
+        final Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() {
+                links.getChildren().clear();
+                ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue()+url);
+                Hyperlink temp;
+                //links.getChildren().add(temp);
+                for(int i = 0; i < 5; i++){
+                    NasdaqArticleParser.getArticleData(articles.get(i));
+                    SentimentAnalyzer.getSentimentScore(articles.get(i));
+                    final Article current = articles.get(i);
+                    temp = new Hyperlink(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
+                    temp.setOnAction((ActionEvent event) -> {
+                        Hyperlink h = (Hyperlink) event.getTarget();
+                        String s = current.getLink();
+                        hs.showDocument(s);
+                        event.consume();
+                    });
+                    if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
+                        temp.setText(temp.getText());
+                        temp.setTextFill(Paint.valueOf("green"));
+                    }
+                    else{
+                        temp.setText(temp.getText());
+                        temp.setTextFill(Paint.valueOf("red"));
+                    }
+                    links.getChildren().add(temp);
+                }
+                Label test;
 
-        String testString = StockFetcher.changeSince(articles.get(0).getDateForChange(), url);
-        test = new Label("Total Change Since Articles: ");
-        if(testString.charAt(0) == '-'){
-            test.setTextFill(Paint.valueOf("red"));
-        }
-        else{
-            test.setTextFill(Paint.valueOf("green"));
-        }
-        links.getChildren().add(test);
+                String testString = StockFetcher.changeSince(articles.get(0).getDateForChange(), url);
+                test = new Label("Total Change Since Articles: ");
+                if(testString.charAt(0) == '-'){
+                    test.setTextFill(Paint.valueOf("red"));
+                }
+                else{
+                    test.setTextFill(Paint.valueOf("green"));
+                }
+                links.getChildren().add(test);
+                return null;
+            }
+        };
+        
+        new Thread(task).start();
     }
 }
