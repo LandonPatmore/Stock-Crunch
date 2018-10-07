@@ -2,7 +2,6 @@ package engine;
 
 import dataobjects.FeedProvider;
 import dataobjects.MarketWatch;
-import dataobjects.YahooArticle;
 import dataworkers.ArticleListFetcher;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
