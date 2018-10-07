@@ -123,33 +123,34 @@ public class HomeController implements Initializable {
 
     static HostServices hs;
 
-    public static void setEs(HostServices es){
+    public static void setEs(HostServices es) {
         hs = es;
     }
 
 
-    public static void setSetThemDarkTrue(){
+    public static void setSetThemDarkTrue() {
         setThemeDark.setValue(true);
         Settings.setTheme("dark");
     }
 
-    public static void setSetThemLightTrue(){
+    public static void setSetThemLightTrue() {
         setThemeLight.setValue(true);
         Settings.setTheme("light");
     }
 
-    public static void setInValidTickerInFavorites(Boolean x){
+    public static void setInValidTickerInFavorites(Boolean x) {
         inValidTickerInFavorites.setValue(x);
     }
 
-    public static void setLoadStockGraph(){
+    public static void setLoadStockGraph() {
         loadStockGraph.setValue(true);
     }
 
-    public static void setSetThemeBullish(Boolean x){
+    public static void setSetThemeBullish(Boolean x) {
         setThemeBullish.setValue(x);
     }
-    public static void setSetThemeBearish(Boolean x){
+
+    public static void setSetThemeBearish(Boolean x) {
         setThemeBearish.setValue(x);
     }
 
@@ -186,14 +187,14 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     isBullish = true;
-                    if(isDarkMode){
+                    if (isDarkMode) {
                         currentTheme = darkBullish;
                         clearStyleSheets();
                         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
                         addStyleSheets();
                         setThemeLight.setValue(false);
                         setSetThemeBearish(false);
-                    }else{
+                    } else {
                         currentTheme = lightBullish;
                         clearStyleSheets();
                         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
@@ -210,7 +211,7 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     isBullish = false;
-                    if(isDarkMode){
+                    if (isDarkMode) {
                         currentTheme = darkBearish;
                         clearStyleSheets();
                         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
@@ -234,13 +235,13 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     isDarkMode = true;
-                    if(isBullish) {
+                    if (isBullish) {
                         currentTheme = darkBullish;
                         clearStyleSheets();
                         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
                         addStyleSheets();
                         setThemeLight.setValue(false);
-                    }else{
+                    } else {
                         currentTheme = darkBearish;
                         clearStyleSheets();
                         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
@@ -256,13 +257,13 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     isDarkMode = false;
-                    if(isBullish) {
+                    if (isBullish) {
                         currentTheme = lightBullish;
                         clearStyleSheets();
                         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
                         addStyleSheets();
                         setThemeDark.setValue(false);
-                    }else{
+                    } else {
                         currentTheme = lightBearish;
                         clearStyleSheets();
                         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
@@ -319,7 +320,8 @@ public class HomeController implements Initializable {
                 sideDrawer.close();
                 hamburger.setDisable(true);
                 Platform.runLater(new Runnable() {
-                    @Override public void run() {
+                    @Override
+                    public void run() {
                         SideDrawerController.deletableCell.setOpenedSideDrawer(false);
                     }
                 });
@@ -337,7 +339,8 @@ public class HomeController implements Initializable {
                 sideDrawer.setVisible(true);
                 sideDrawer.open();
                 Platform.runLater(new Runnable() {
-                    @Override public void run() {
+                    @Override
+                    public void run() {
                         SideDrawerController.deletableCell.setOpenedSideDrawer(true);
                     }
                 });
@@ -386,7 +389,7 @@ public class HomeController implements Initializable {
 
         mainSplitPane.getItems().add(scrollPaneForStockPane);
 
-        if("dark".equals(Settings.getTheme())){
+        if ("dark".equals(Settings.getTheme())) {
             setThemeDark.setValue(true);
         } else {
             setThemeLight.setValue(true);
@@ -401,8 +404,8 @@ public class HomeController implements Initializable {
                     JFXDialogLayout content = new JFXDialogLayout();
                     content.setHeading(new Text("Invalid Ticker!"));
                     content.setBody(new Text("No stock was found under that ticker, please try again."));
-                    JFXDialog wrongInfo = new JFXDialog(stocksInfoPane,content, JFXDialog.DialogTransition.LEFT);
-                    JFXButton button =  new JFXButton("Okay");
+                    JFXDialog wrongInfo = new JFXDialog(stocksInfoPane, content, JFXDialog.DialogTransition.LEFT);
+                    JFXButton button = new JFXButton("Okay");
                     button.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent event) {
@@ -420,58 +423,58 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     if (!SideDrawerController.getSelectedStock().equals("")) {
-                        String selectedStock = SideDrawerController.getSelectedStock();
-                        if(linechart == null) {
-                            CategoryAxis xAxis = new CategoryAxis();
-                            NumberAxis yAxis = new NumberAxis();
-                            yAxis.setForceZeroInRange(false);
-                            linechart = new LineChart(xAxis, yAxis);
+                        Platform.runLater(() -> {
+                            String selectedStock = SideDrawerController.getSelectedStock();
+                            if (linechart == null) {
+                                CategoryAxis xAxis = new CategoryAxis();
+                                NumberAxis yAxis = new NumberAxis();
+                                yAxis.setForceZeroInRange(false);
+                                linechart = new LineChart(xAxis, yAxis);
+                                linechart.setTitle(selectedStock);
+                                linechart.setCreateSymbols(false);
+                                linechart.setMaxSize(1200, 450);
+                                linechart.setLegendVisible(false);
+                                stockPaneVBox.getChildren().addAll(linechart);
+                                VBox.setVgrow(linechart, Priority.ALWAYS);
+                                linechart.setLegendVisible(false);
+                                stocksInfoPane.getChildren().addAll(linechart);
+                                stockPaneVBox.getChildren().add(linechart);
+                                load(selectedStock);
+                                links.setAlignment(Pos.CENTER);
+
+                            } else {
+                                linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
+                            }
                             linechart.setTitle(selectedStock);
-                            linechart.setCreateSymbols(false);
-                            linechart.setMaxSize(1200,450);
-                            linechart.setLegendVisible(false);
-                            stockPaneVBox.getChildren().addAll(linechart);
-                            VBox.setVgrow(linechart,Priority.ALWAYS);
-                            linechart.setLegendVisible(false);
-                            stocksInfoPane.getChildren().addAll(linechart);
-                            stockPaneVBox.getChildren().add(linechart);
-                            load(selectedStock);
-                            links.setAlignment(Pos.CENTER);
+                            String graph = this.getClass().getClassLoader().getResource("graph-bullish.css").toExternalForm();
+                            linechart.getStylesheets().add(graph);
+                            loadGraph(selectedStock, 1, "d", 100);
+                            if (!stockPaneVBox.getChildren().contains(headers)) {
+                                stockPaneVBox.getChildren().add(headers);
+                            }
 
-                        }
-                        else {
-                            linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
-                        }
-                        linechart.setTitle(selectedStock);
-                        String graph = this.getClass().getClassLoader().getResource("graph-bullish.css").toExternalForm();
-                        linechart.getStylesheets().add(graph);
-                        loadGraph(selectedStock,1,"d",100);
-                        if(!stockPaneVBox.getChildren().contains(headers)){
-                            stockPaneVBox.getChildren().add(headers);
-                        }
-
-                        if(!stockPaneVBox.getChildren().contains(stats)){
-                            loadData(selectedStock);
-                            stats.setSpacing(15);
-                            stats.setAlignment(Pos.CENTER);
+                            if (!stockPaneVBox.getChildren().contains(stats)) {
+                                loadData(selectedStock);
+                                stats.setSpacing(15);
+                                stats.setAlignment(Pos.CENTER);
 
 
-                            stats.getChildren().add(open);
+                                stats.getChildren().add(open);
 
-                            stockPaneVBox.getChildren().add(stats);
-                            stockPaneVBox.getChildren().add(links);
+                                stockPaneVBox.getChildren().add(stats);
+                                stockPaneVBox.getChildren().add(links);
                             /*stats.getChildren().add(close);
                             stats.getChildren().add(volume);
                             stats.getChildren().add(current);
                             stats.getChildren().add(change);
                             stats.getChildren().add(low);
                             stats.getChildren().add(high);*/
-                        }
-                        else{
-                            load(selectedStock);
-                            loadData(selectedStock);
-                        }
-                        loadStockGraph.setValue(false);
+                            } else {
+                                load(selectedStock);
+                                loadData(selectedStock);
+                            }
+                            loadStockGraph.setValue(false);
+                        });
                     }
                 }
             }
@@ -494,7 +497,7 @@ public class HomeController implements Initializable {
         settingsDrawerController.darkToggle.getStylesheets().add(css);
     }
 
-    private void clearStyleSheets(){
+    private void clearStyleSheets() {
         anchorPane.getStylesheets().clear();
         mainSplitPane.getStylesheets().clear();
         topBarGridPane.getStylesheets().clear();
@@ -545,15 +548,17 @@ public class HomeController implements Initializable {
         }
     }
 
-    private void loadGraph(String url, int num, String timeframe, int totalNum){
-        linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, num, timeframe), totalNum));
-        linechart.setVisible(true);
+    private void loadGraph(String url, int num, String timeframe, int totalNum) {
+        Platform.runLater(() -> {
+            linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, num, timeframe), totalNum));
+            linechart.setVisible(true);
+        });
     }
 
-    private void loadData(String url){
+    private void loadData(String url) {
         JSONObject object = StockFetcher.stockDataCurrent(url);
 
-        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() +"\t \t" + object.get("high").toString());
+        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() + "\t \t" + object.get("high").toString());
         open.setTextFill(Paint.valueOf("white"));
     }
 
@@ -582,7 +587,6 @@ public class HomeController implements Initializable {
                 temp.setText(temp.getText());
                 temp.setTextFill(Paint.valueOf("red"));
             }
-
             links.getChildren().add(temp);
         }
         Label test;
@@ -596,6 +600,5 @@ public class HomeController implements Initializable {
             test.setTextFill(Paint.valueOf("green"));
         }
         links.getChildren().add(test);
-
     }
 }
