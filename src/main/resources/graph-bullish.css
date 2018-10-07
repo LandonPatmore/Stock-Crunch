@@ -62,12 +62,12 @@
 .chart-legend {
     -fx-background-color:  transparent;
     -fx-padding: 20px;
-    -fx-fill: #4682b4;
+    -fx-fill: white;
 }
 
 .chart-legend-item-symbol{
     -fx-background-radius: 0;
-    -fx-fill: #4682b4;
+    -fx-fill: white;
 }
 
 .chart-legend-item{
