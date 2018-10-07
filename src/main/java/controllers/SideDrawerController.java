@@ -21,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import org.jsoup.Jsoup;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,7 +45,7 @@ public class SideDrawerController implements Initializable {
 
     @FXML
     public void addToFavorites(ActionEvent event){
-        if (isValidTicker){
+        if (validTicker(stockSearchFieldForFavs.getText().toUpperCase())){
             list.add(stockSearchFieldForFavs.getText().toUpperCase());
             stockSearchFieldForFavs.clear();
         } else{
@@ -103,4 +104,14 @@ public class SideDrawerController implements Initializable {
         listView.setExpanded(false);
         listView.setVerticalGap(0.0);
     }
+
+    private boolean validTicker(String ticker){
+        try{
+            Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker + "/quote").ignoreContentType(true).get();
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
 }
