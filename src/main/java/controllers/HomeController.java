@@ -39,6 +39,7 @@ import parsers.NasdaqArticleParser;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -313,18 +314,22 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     if (!SideDrawerController.getSelectedStock().equals("")) {
-                        if(linechart!=null) {
-                            linechart.getData().clear();
+                        if(linechart == null) {
+                            CategoryAxis xAxis = new CategoryAxis();
+                            NumberAxis yAxis = new NumberAxis();
+                            yAxis.setForceZeroInRange(false);
+                            linechart = new LineChart(xAxis, yAxis);
+                            stocksInfoPane.getChildren().addAll(linechart);
+                        }
+                        else {
+                            linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
                         }
                         String selectedStock = SideDrawerController.getSelectedStock();
-                        CategoryAxis xAxis = new CategoryAxis();
-                        NumberAxis yAxis = new NumberAxis();
-                        yAxis.setForceZeroInRange(false);
-                        linechart = new LineChart(xAxis, yAxis);
+
                         String graph = this.getClass().getClassLoader().getResource("graph.css").toExternalForm();
                         linechart.getStylesheets().add(graph);
                         loadGraph(selectedStock,1,"d",100);
-                        stocksInfoPane.getChildren().addAll(linechart);
+                        //if(!stocksInfoPane.getChildren().contains(linechart));
                         loadStockGraph.setValue(false);
                     }
                 }
