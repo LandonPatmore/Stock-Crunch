@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import model.Settings;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -21,7 +23,7 @@ public class SettingsDrawerController implements Initializable  {
     public JFXToggleButton darkToggle;
 
     @FXML
-    public void selectLightTheme(ActionEvent event){
+    public void selectLightTheme(){
         HomeController.setSetThemLightTrue();
         if (darkToggle.isSelected()){
             darkToggle.setSelected(false);
@@ -29,10 +31,12 @@ public class SettingsDrawerController implements Initializable  {
         if (!lightToggle.isSelected()){
             lightToggle.setSelected(true);
         }
+
+        Settings.setTheme("light");
     }
 
     @FXML
-    public void selectLightThemeFromPane(MouseEvent event){
+    public void selectLightThemeFromPane(){
         HomeController.setSetThemLightTrue();
         if (darkToggle.isSelected()){
             darkToggle.setSelected(false);
@@ -40,10 +44,12 @@ public class SettingsDrawerController implements Initializable  {
         if (!lightToggle.isSelected()){
             lightToggle.setSelected(true);
         }
+
+        Settings.setTheme("light");
     }
 
     @FXML
-    public void selectDarkTheme(ActionEvent event){
+    public void selectDarkTheme(){
         HomeController.setSetThemDarkTrue();
         if (lightToggle.isSelected()){
             lightToggle.setSelected(false);
@@ -51,10 +57,12 @@ public class SettingsDrawerController implements Initializable  {
         if (!darkToggle.isSelected()){
             darkToggle.setSelected(true);
         }
+
+        Settings.setTheme("dark");
     }
 
     @FXML
-    public void selectDarkThemeFromPane(MouseEvent event){
+    public void selectDarkThemeFromPane(){
         HomeController.setSetThemDarkTrue();
         if (lightToggle.isSelected()){
             lightToggle.setSelected(false);
@@ -62,6 +70,8 @@ public class SettingsDrawerController implements Initializable  {
         if (!darkToggle.isSelected()){
             darkToggle.setSelected(true);
         }
+
+        Settings.setTheme("dark");
     }
 
     @Override

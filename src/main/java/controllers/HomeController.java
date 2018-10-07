@@ -16,6 +16,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import model.Settings;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -75,14 +77,18 @@ public class HomeController implements Initializable {
 
     public static void setSetThemDarkTrue(){
         setThemeDark.setValue(true);
+        Settings.setTheme("dark");
     }
 
     public static void setSetThemLightTrue(){
         setThemeLight.setValue(true);
+        Settings.setTheme("light");
     }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Settings.loadSettings();
+
         //Load side Drawer FXML
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Side_Drawer.fxml"));
@@ -188,6 +194,7 @@ public class HomeController implements Initializable {
 
         settingsButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
             if (settingsDrawer.isOpened()) {
+                Settings.loadSettings();
                 settingsDrawer.close();
                 final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
                 executor.schedule(new Runnable() {
@@ -228,6 +235,12 @@ public class HomeController implements Initializable {
                 scrollPaneForStockPane.getViewportBounds().getHeight(), scrollPaneForStockPane.viewportBoundsProperty()));
 
         mainSplitPane.getItems().add(scrollPaneForStockPane);
+
+        if("dark".equals(Settings.getTheme())){
+            setThemeDark.setValue(true);
+        } else {
+            setThemeLight.setValue(true);
+        }
 
     }
 
