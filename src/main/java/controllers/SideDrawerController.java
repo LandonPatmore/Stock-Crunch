@@ -147,17 +147,20 @@ public class SideDrawerController implements Initializable {
     }
 
     public static boolean isBullish(String ticker){
-        try{
-            Document document = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker + "/quote").ignoreContentType(true).get();
-            JSONObject json = new JSONObject(document.text());
-            if(Double.parseDouble(json.get("change").toString()) < 0){
+        if(!ticker.equals("")) {
+            try {
+                Document document = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker + "/quote").ignoreContentType(true).get();
+                JSONObject json = new JSONObject(document.text());
+                if (Double.parseDouble(json.get("change").toString()) < 0) {
+                    return false;
+                }
+                return true;
+            } catch (Exception e) {
+                System.out.println("Oopsy Whoospie i mawde a ewwor oWo @ isBullish  " + e.getLocalizedMessage());
                 return false;
             }
-            return true;
-        }catch (Exception e){
-            System.out.println("Oopsy Whoospie i mawde a ewwor oWo @ isBullish  " + e.getLocalizedMessage());
-            return false;
         }
+        return false;
     }
 
 }
