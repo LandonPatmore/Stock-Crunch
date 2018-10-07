@@ -2,9 +2,7 @@ package controllers;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
-import dataobjects.Article;
-import dataobjects.ArticleSentiment;
-import dataobjects.RSSFeedProvider;
+import dataobjects.*;
 import dataworkers.RSSFeedFetcher;
 import dataworkers.SentimentAnalyzer;
 import dataworkers.StockFetcher;
@@ -424,7 +422,7 @@ public class HomeController implements Initializable {
                             linechart.setMaxSize(1200,450);
                             linechart.setLegendVisible(false);
                             stockPaneVBox.getChildren().addAll(linechart);
-                            stockPaneVBox.setVgrow(linechart,Priority.ALWAYS);
+                            VBox.setVgrow(linechart,Priority.ALWAYS);
                             linechart.setLegendVisible(false);
                             stocksInfoPane.getChildren().addAll(linechart);
                             stockPaneVBox.getChildren().add(linechart);
@@ -550,15 +548,15 @@ public class HomeController implements Initializable {
 
     private void load(String url){
         links.getChildren().clear();
-        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.MARKET_WATCH, RSSFeedProvider.MARKET_WATCH_FEED, url);
+        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue() + url);
         Label temp;
         //links.getChildren().add(temp);
         for(int i = 0; i < 5; i++){
-            MarketWatchArticleParser.getArticleData(articles.get(i));
+            NasdaqArticleParser.getArticleData(articles.get(i));
             SentimentAnalyzer.getSentimentScore(articles.get(i));
 
             temp = new Label(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
-            if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
+            if(temp.getText().substring(temp.getText().length()-7).equals("bullish")){
                 temp.setTextFill(Paint.valueOf("green"));
             }
             else{
