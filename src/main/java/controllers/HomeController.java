@@ -3,10 +3,6 @@ package controllers;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
 import dataobjects.Article;
-import dataobjects.NasdaqArticleRSSFeed;
-import dataobjects.RSSFeedProvider;
-import dataworkers.DataFetcher;
-import dataworkers.RSSFeedFetcher;
 import dataworkers.StockFetcher;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -34,11 +30,9 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.text.Text;
 import model.Settings;
-import parsers.NasdaqArticleParser;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -100,6 +94,9 @@ public class HomeController implements Initializable {
     private static BooleanProperty loadStockGraph = new SimpleBooleanProperty(false);
     private LineChart linechart;
     private VBox stockPaneVBox;
+    private Label ticker;
+    private static boolean isBullish;
+    private static boolean isDarkMode;
 
 
     public static void setSetThemDarkTrue(){
@@ -118,6 +115,13 @@ public class HomeController implements Initializable {
 
     public static void setLoadStockGraph(){
         loadStockGraph.setValue(true);
+    }
+
+    public static void setSetThemeBullish(Boolean x){
+        setThemeBullish.setValue(x);
+    }
+    public static void setSetThemeBearish(Boolean x){
+        setThemeBearish.setValue(x);
     }
 
     @Override
@@ -148,15 +152,72 @@ public class HomeController implements Initializable {
         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
         addStyleSheets();
 
+        setThemeBullish.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    isBullish = true;
+                    if(isDarkMode){
+                        currentTheme = darkBullish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeLight.setValue(false);
+                        setSetThemeBearish(false);
+                    }else{
+                        currentTheme = lightBullish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeDark.setValue(false);
+                        setSetThemeBearish(false);
+                    }
+                }
+            }
+        });
+
+        setThemeBearish.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    isBullish = false;
+                    if(isDarkMode){
+                        currentTheme = darkBearish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeLight.setValue(false);
+                        setSetThemeBullish(false);
+                    } else {
+                        currentTheme = lightBearish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeDark.setValue(false);
+                        setSetThemeBullish(false);
+                    }
+                }
+            }
+        });
+
         setThemeDark.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
-                    currentTheme = darkBullish;
-                    clearStyleSheets();
-                    css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                    addStyleSheets();
-                    setThemeLight.setValue(false);
+                    isDarkMode = true;
+                    if(isBullish) {
+                        currentTheme = darkBullish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeLight.setValue(false);
+                    }else{
+                        currentTheme = darkBearish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeLight.setValue(false);
+                    }
                 }
             }
         });
@@ -165,11 +226,20 @@ public class HomeController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
-                    currentTheme = lightBearish;
-                    clearStyleSheets();
-                    css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                    addStyleSheets();
-                    setThemeDark.setValue(false);
+                    isDarkMode = false;
+                    if(isBullish) {
+                        currentTheme = lightBullish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeDark.setValue(false);
+                    }else{
+                        currentTheme = lightBearish;
+                        clearStyleSheets();
+                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+                        addStyleSheets();
+                        setThemeDark.setValue(false);
+                    }
                 }
             }
         });
@@ -262,21 +332,12 @@ public class HomeController implements Initializable {
         list.setMaxHeight(3400);
 
 
-        stockSearchField = new JFXTextField();
-        stockSearchField.setPromptText("Search for a Stock...");
-        stockSearchField.setLabelFloat(false);
-        stockSearchField.setPrefSize(300,20);
-        stockSearchField.setMaxSize(300,20);
-        String searchCss = this.getClass().getClassLoader().getResource("stock-search-style.css").toExternalForm();
-        stockSearchField.getStylesheets().add(searchCss);
         stockPaneVBox = new VBox();
+        stockPaneVBox.setSpacing(10);
         stockPaneVBox.setAlignment(Pos.CENTER);
         StackPane.setAlignment(stockPaneVBox, Pos.CENTER);
-        stockPaneVBox.getChildren().add(stockSearchField);
-        //searchButton = new JFXButton();
         stocksInfoPane.getChildren().addAll(stockPaneVBox);
         scrollPaneForStockPane.setContent(stocksInfoPane);
-        scrollPaneForStockPane.setPannable(true);
         stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
                 scrollPaneForStockPane.getViewportBounds().getWidth(), scrollPaneForStockPane.viewportBoundsProperty()));
         stocksInfoPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
@@ -318,24 +379,27 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     if (!SideDrawerController.getSelectedStock().equals("")) {
+                        String selectedStock = SideDrawerController.getSelectedStock();
                         if(linechart == null) {
                             CategoryAxis xAxis = new CategoryAxis();
                             NumberAxis yAxis = new NumberAxis();
                             yAxis.setForceZeroInRange(false);
                             linechart = new LineChart(xAxis, yAxis);
+                            linechart.setTitle(selectedStock);
                             linechart.setCreateSymbols(false);
-                            stocksInfoPane.getChildren().addAll(linechart);
+                            linechart.setMaxSize(600,450);
+                            linechart.setLegendVisible(false);
+                            stockPaneVBox.getChildren().addAll(linechart);
+                            stockPaneVBox.setVgrow(linechart,Priority.ALWAYS);
                         }
                         else {
                             linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
                         }
-                        String selectedStock = SideDrawerController.getSelectedStock();
-
-                        String graph = this.getClass().getClassLoader().getResource("graph.css").toExternalForm();
+                        linechart.setTitle(selectedStock);
+                        String graph = this.getClass().getClassLoader().getResource("graph-bullish.css").toExternalForm();
                         linechart.getStylesheets().add(graph);
                         loadGraph(selectedStock,1,"d",100);
                         //if(!stocksInfoPane.getChildren().contains(linechart));
-                        stockPaneVBox.getChildren().add(linechart);
                         loadStockGraph.setValue(false);
                     }
                 }

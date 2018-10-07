@@ -4,9 +4,6 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import dataobjects.Favorites;
-import dataobjects.RSSFeedProvider;
-import dataworkers.DataFetcher;
-import dataworkers.RSSFeedFetcher;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
 import javafx.application.Platform;
@@ -26,7 +23,6 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.TextAlignment;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -52,6 +48,8 @@ public class SideDrawerController implements Initializable {
     public ObservableList<String> list = Favorites.readData() != null ? Favorites.readData() : FXCollections.observableArrayList();
     private boolean isValidTicker = false;
     private static String selectedStock = "";
+    public static Boolean isBullish = true;
+
 
     public static String getSelectedStock() {
         return selectedStock;
@@ -75,6 +73,11 @@ public class SideDrawerController implements Initializable {
     public static void openFavorite(ActionEvent event){
         selectedStock = ((Control)event.getSource()).getId();
         HomeController.setLoadStockGraph();
+        if(isBullish(selectedStock)){
+            HomeController.setSetThemeBullish(true);
+        }else{
+            HomeController.setSetThemeBearish(true);
+        }
     }
 
 
@@ -90,7 +93,7 @@ public class SideDrawerController implements Initializable {
     static class deletableCell extends ListCell<String> {
         HBox hbox = new HBox();
         JFXButton text = new JFXButton("");
-        FontAwesomeIconView thumbsDownIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
+        FontAwesomeIconView timesIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
         private static BooleanProperty openedSideDrawer = new SimpleBooleanProperty(false);
         private String bullish = this.getClass().getClassLoader().getResource("favorites-bullish.css").toExternalForm();
         private String bearish = this.getClass().getClassLoader().getResource("favorites-bearish.css").toExternalForm();
@@ -101,16 +104,16 @@ public class SideDrawerController implements Initializable {
 
         public deletableCell() {
             super();
-            thumbsDownIcon.setStyle("-fx-fill: #7f8fa6");
-            thumbsDownIcon.setSize("16px");
-            hbox.getChildren().addAll(text, thumbsDownIcon);
+            timesIcon.setStyle("-fx-fill: #7f8fa6");
+            timesIcon.setSize("16px");
+            hbox.getChildren().addAll(text, timesIcon);
             hbox.setAlignment(Pos.CENTER);
             text.setAlignment(Pos.CENTER_LEFT);
             text.setMaxWidth(163);
             text.setPrefWidth(163);
             text.setOnAction(e ->openFavorite(e));
             //text.getStylesheets().add(bearish);
-            thumbsDownIcon.setOnMouseClicked(MouseEvent -> {
+            timesIcon.setOnMouseClicked(MouseEvent -> {
                 Platform.runLater(() -> {
                     getListView().getItems().remove(getItem());
                     Favorites.serializeData(getListView().getItems());
@@ -128,9 +131,11 @@ public class SideDrawerController implements Initializable {
                                 if (SideDrawerController.isBullish(text.getText())) {
                                     text.getStylesheets().clear();
                                     text.getStylesheets().add(bullish);
+                                    isBullish = true;
                                 } else {
                                     text.getStylesheets().clear();
                                     text.getStylesheets().add(bearish);
+                                    isBullish = false;
                                 }
                                 return null;
                             }
