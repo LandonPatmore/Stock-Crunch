@@ -95,7 +95,7 @@ public class HomeController implements Initializable {
     private JFXTextField stockSearchField;
     private ScrollPane scrollPaneForStockPane = new ScrollPane();
     private StackPane stocksInfoPane = new StackPane();
-    private JFXButton searchButton = new JFXButton();
+    private JFXButton searchButton;
     private static BooleanProperty inValidTickerInFavorites = new SimpleBooleanProperty(false);
 
     public static void setSetThemDarkTrue(){
@@ -262,7 +262,8 @@ public class HomeController implements Initializable {
         String searchCss = this.getClass().getClassLoader().getResource("stock-search-style.css").toExternalForm();
         stockSearchField.getStylesheets().add(searchCss);
         StackPane.setAlignment(stockSearchField, Pos.CENTER);
-        searchButton = new JFXButton();
+        //searchButton = new JFXButton();
+        stocksInfoPane.getChildren().addAll(stockSearchField);
         scrollPaneForStockPane.setContent(stocksInfoPane);
         scrollPaneForStockPane.setPannable(true);
         stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
