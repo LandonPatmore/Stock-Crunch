@@ -21,6 +21,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
@@ -313,7 +314,7 @@ public class HomeController implements Initializable {
                 if (newValue) {
                     if (!SideDrawerController.getSelectedStock().equals("")) {
                         String selectedStock = SideDrawerController.getSelectedStock();
-                        NumberAxis xAxis = new NumberAxis();
+                        CategoryAxis xAxis = new CategoryAxis();
                         NumberAxis yAxis = new NumberAxis();
                         yAxis.setForceZeroInRange(false);
                         linechart = new LineChart(xAxis, yAxis);

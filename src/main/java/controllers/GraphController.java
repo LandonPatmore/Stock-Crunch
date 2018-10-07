@@ -16,17 +16,27 @@ public class GraphController {
         try{
             ((JSONObject)array.get(0)).get("vwap");
             average = "vwap";
+            for(int i = 0; i < totalNum; i+=spacer){
+                if(i  == totalNum -1){
+                    series.getData().add(new XYChart.Data(((JSONObject)array.get(array.length()-1)).get("date").toString(), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
+                }
+                else{
+                    series.getData().add(new XYChart.Data(((JSONObject)array.get(i)).get("date"), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
+                }
+            }
+
         }catch (JSONException e){
             average = "average";
-        }
-        for(int i = 0; i < totalNum; i+=spacer){
-            if(i  == totalNum -1){
-                series.getData().add(new XYChart.Data(((JSONObject)array.get(array.length())).get("date").toString(), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
+            for(int i = 0; i < totalNum; i+=spacer){
+                if(i  == totalNum -1){
+                    series.getData().add(new XYChart.Data(((JSONObject)array.get(array.length()-1)).get("minute").toString(), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
+                }
+                else{
+                    series.getData().add(new XYChart.Data(((JSONObject)array.get(i)).get("minute").toString(), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
+                }
             }
-            else{
-                series.getData().add(new XYChart.Data(((JSONObject)array.get(i)).get("date").toString(), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
-            }
         }
+
         return series;
     }
 }
