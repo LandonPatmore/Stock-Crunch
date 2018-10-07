@@ -22,6 +22,18 @@
     -fx-background-color: #D7D8DC;
 }
 
+#stocksInfoPane {
+    -fx-background-color: #dcdde1;
+}
+
+#scrollPaneForStockPane {
+    -fx-background-color: #dcdde1;
+}
+
+.jfx-drawer-overlay-pane {
+    -fx-background-color: #c0392b;
+}
+
 .jfx-toggle-button{
     -jfx-toggle-color: #c0392b;
     -jfx-toggle-line-color: #e74c3c;

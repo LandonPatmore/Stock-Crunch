@@ -1,28 +1,24 @@
 package controllers;
 
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDrawer;
-import com.jfoenix.controls.JFXHamburger;
+import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
-import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -72,6 +68,9 @@ public class HomeController implements Initializable {
     private static BooleanProperty setThemeLight = new SimpleBooleanProperty(false);
     private static BooleanProperty setThemeBullish = new SimpleBooleanProperty(false);
     private static BooleanProperty setThemeBearish = new SimpleBooleanProperty(false);
+    private JFXTextField stockSearchField;
+    private ScrollPane scrollPaneForStockPane = new ScrollPane();
+    private StackPane stocksInfoPane = new StackPane();
 
     public static void setSetThemDarkTrue(){
         setThemeDark.setValue(true);
@@ -105,16 +104,15 @@ public class HomeController implements Initializable {
         }
 
         css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-
-        //Add css sylesheet to stuff
         addStyleSheets();
 
         setThemeDark.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
+                    currentTheme = darkBullish;
                     clearStyleSheets();
-                    css = this.getClass().getClassLoader().getResource(darkBullish).toExternalForm();
+                    css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
                     addStyleSheets();
                     setThemeLight.setValue(false);
                 }
@@ -125,8 +123,9 @@ public class HomeController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
+                    currentTheme = lightBearish;
                     clearStyleSheets();
-                    css = this.getClass().getClassLoader().getResource(lightBearish).toExternalForm();
+                    css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
                     addStyleSheets();
                     setThemeDark.setValue(false);
                 }
@@ -137,6 +136,8 @@ public class HomeController implements Initializable {
         anchorPane.setId("anchorpane");
         mainSplitPane.setId("split");
         topBarGridPane.setId("topBar");
+        stocksInfoPane.setId("stocksInfoPane");
+        scrollPaneForStockPane.setId("scrollPaneForStockPane");
         sideDrawerController.dashboardDrawerVBox.setId("sidedrawervbox");
         sideDrawerController.listView.setId("sidedrawerlistview");
         settingsDrawerController.settingsPane.setId("settingsdrawerpane");
@@ -198,6 +199,33 @@ public class HomeController implements Initializable {
                 settingsDrawer.open();
             }
         });
+
+        JFXListView<Label> list = new JFXListView<>();
+        for (int i = 0; i < 100; i++) {
+            list.getItems().add(new Label("Item " + i));
+        }
+        list.getStyleClass().add("mylistview");
+        list.setMaxHeight(3400);
+
+
+        stockSearchField = new JFXTextField();
+        stockSearchField.setPromptText("Search for a Stock...");
+        stockSearchField.setLabelFloat(false);
+        stockSearchField.setPrefSize(300,20);
+        stockSearchField.setMaxSize(300,20);
+        String searchCss = this.getClass().getClassLoader().getResource("stock-search-style.css").toExternalForm();
+        stockSearchField.getStylesheets().add(searchCss);
+        StackPane.setAlignment(stockSearchField, Pos.CENTER);
+        stocksInfoPane.getChildren().addAll(stockSearchField);
+        scrollPaneForStockPane.setContent(stocksInfoPane);
+        scrollPaneForStockPane.setPannable(true);
+        stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
+                scrollPaneForStockPane.getViewportBounds().getWidth(), scrollPaneForStockPane.viewportBoundsProperty()));
+        stocksInfoPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
+                scrollPaneForStockPane.getViewportBounds().getHeight(), scrollPaneForStockPane.viewportBoundsProperty()));
+
+        mainSplitPane.getItems().add(scrollPaneForStockPane);
+
     }
 
     private void addStyleSheets(){
@@ -205,6 +233,9 @@ public class HomeController implements Initializable {
         mainSplitPane.getStylesheets().add(css);
         topBarGridPane.getStylesheets().add(css);
         settingsButton.getStylesheets().add(css);
+        stocksInfoPane.getStylesheets().add(css);
+        settingsDrawer.getStylesheets().add(css);
+        scrollPaneForStockPane.getStylesheets().add(css);
         sideDrawerController.dashboardDrawerVBox.getStylesheets().add(css);
         sideDrawerController.listView.getStylesheets().add(css);
         settingsDrawerController.settingsPane.getStylesheets().add(css);
@@ -217,6 +248,9 @@ public class HomeController implements Initializable {
         mainSplitPane.getStylesheets().clear();
         topBarGridPane.getStylesheets().clear();
         settingsButton.getStylesheets().clear();
+        stocksInfoPane.getStylesheets().clear();
+        settingsDrawer.getStylesheets().clear();
+        scrollPaneForStockPane.getStylesheets().clear();
         sideDrawerController.dashboardDrawerVBox.getStylesheets().clear();
         sideDrawerController.listView.getStylesheets().clear();
         settingsDrawerController.settingsPane.getStylesheets().clear();

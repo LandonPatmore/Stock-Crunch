@@ -15,10 +15,10 @@ public class SettingsDrawerController implements Initializable  {
     public AnchorPane settingsPane;
 
     @FXML
-    JFXToggleButton lightToggle;
+    public JFXToggleButton lightToggle;
 
     @FXML
-    JFXToggleButton darkToggle;
+    public JFXToggleButton darkToggle;
 
     @FXML
     public void selectLightTheme(ActionEvent event){

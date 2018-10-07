@@ -1,0 +1,9 @@
+.jfx-text-field {
+    -jfx-focus-color: transparent;
+    -jfx-unfocus-color: transparent;
+    -fx-background-color:  #ecf0f1;
+    -fx-border-color:  #b2bec3;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+}
