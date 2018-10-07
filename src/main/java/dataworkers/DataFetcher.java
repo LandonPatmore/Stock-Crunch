@@ -7,6 +7,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
+import java.io.IOException;
+
 public class DataFetcher {
 
     // TODO: Add authentication as well for endpoints
@@ -27,6 +29,15 @@ public class DataFetcher {
 
             return Jsoup.parse(response.getBody(), "", Parser.xmlParser());
         } catch (Exception e){
+            System.out.println(e.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    public static Document htmlGrabber(String url) {
+        try {
+            return Jsoup.connect(url).get();
+        } catch (IOException e){
             System.out.println(e.getLocalizedMessage());
             return null;
         }

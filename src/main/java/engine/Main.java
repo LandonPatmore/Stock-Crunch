@@ -1,8 +1,8 @@
 package engine;
 
+import dataobjects.Article;
 import dataobjects.FeedProvider;
 import dataobjects.MarketWatch;
-import dataobjects.YahooArticle;
 import dataworkers.ArticleListFetcher;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends Application {
     public static void main(String[] args) {
@@ -26,7 +27,10 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
         primaryStage.show();
-        ArticleListFetcher.grabArticles(FeedProvider.MARKET_WATCH, FeedProvider.MARKET_WATCH_URL, MarketWatch.SOFTWARE_STORIES);
+        ArrayList<Article> articles = new ArrayList<>();
+        articles = ArticleListFetcher.grabArticles(FeedProvider.MARKET_WATCH, FeedProvider.MARKET_WATCH_URL,
+                MarketWatch.SOFTWARE_STORIES);
+
         //DashboardLogin.setStage(primaryStage);
     }
 }

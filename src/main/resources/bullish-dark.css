@@ -22,6 +22,11 @@
     -fx-background-color: #2f3640;
 }
 
+.jfx-toggle-button{
+    -jfx-toggle-color: #218c74;
+    -jfx-toggle-line-color: #16a085;
+}
+
 .list-view {
     -fx-background-color: #2f3640;
 }
@@ -30,7 +35,6 @@
     -fx-background-color: #2f3640;
     -fx-text-fill: white;
 }
-
 
 .jfx-hamburger StackPane{
     -fx-background-color: #218c74;

@@ -4,7 +4,12 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
-import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -17,6 +22,7 @@ import javafx.scene.layout.VBox;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -56,6 +62,24 @@ public class HomeController implements Initializable {
 
     private SideDrawerController sideDrawerController;
     private SettingsDrawerController settingsDrawerController;
+    private String darkBullish = "bullish-dark.css";
+    private String lightBullish = "bullish-light.css";
+    private String darkBearish = "bearish-dark.css";
+    private String lightBearish = "bearish-light.css";
+    private String currentTheme = darkBullish;
+    private String css;
+    private static BooleanProperty setThemeDark = new SimpleBooleanProperty(false);
+    private static BooleanProperty setThemeLight = new SimpleBooleanProperty(false);
+    private static BooleanProperty setThemeBullish = new SimpleBooleanProperty(false);
+    private static BooleanProperty setThemeBearish = new SimpleBooleanProperty(false);
+
+    public static void setSetThemDarkTrue(){
+        setThemeDark.setValue(true);
+    }
+
+    public static void setSetThemLightTrue(){
+        setThemeLight.setValue(true);
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -80,14 +104,34 @@ public class HomeController implements Initializable {
             Logger.getLogger(SettingsDrawerController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+
         //Add css sylesheet to stuff
-        String css = this.getClass().getClassLoader().getResource("bearish-dark.css").toExternalForm();
-        anchorPane.getStylesheets().add(css);
-        mainSplitPane.getStylesheets().add(css);
-        topBarGridPane.getStylesheets().add(css);
-        sideDrawerController.dashboardDrawerVBox.getStylesheets().add(css);
-        sideDrawerController.listView.getStylesheets().add(css);
-        settingsDrawerController.settingsPane.getStylesheets().add(css);
+        addStyleSheets();
+
+        setThemeDark.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    clearStyleSheets();
+                    css = this.getClass().getClassLoader().getResource(darkBullish).toExternalForm();
+                    addStyleSheets();
+                    setThemeLight.setValue(false);
+                }
+            }
+        });
+
+        setThemeLight.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    clearStyleSheets();
+                    css = this.getClass().getClassLoader().getResource(lightBearish).toExternalForm();
+                    addStyleSheets();
+                    setThemeDark.setValue(false);
+                }
+            }
+        });
 
         //add id to stylesheet
         anchorPane.setId("anchorpane");
@@ -154,5 +198,29 @@ public class HomeController implements Initializable {
                 settingsDrawer.open();
             }
         });
+    }
+
+    private void addStyleSheets(){
+        anchorPane.getStylesheets().add(css);
+        mainSplitPane.getStylesheets().add(css);
+        topBarGridPane.getStylesheets().add(css);
+        settingsButton.getStylesheets().add(css);
+        sideDrawerController.dashboardDrawerVBox.getStylesheets().add(css);
+        sideDrawerController.listView.getStylesheets().add(css);
+        settingsDrawerController.settingsPane.getStylesheets().add(css);
+        settingsDrawerController.lightToggle.getStylesheets().add(css);
+        settingsDrawerController.darkToggle.getStylesheets().add(css);
+    }
+
+    private void clearStyleSheets(){
+        anchorPane.getStylesheets().clear();
+        mainSplitPane.getStylesheets().clear();
+        topBarGridPane.getStylesheets().clear();
+        settingsButton.getStylesheets().clear();
+        sideDrawerController.dashboardDrawerVBox.getStylesheets().clear();
+        sideDrawerController.listView.getStylesheets().clear();
+        settingsDrawerController.settingsPane.getStylesheets().clear();
+        settingsDrawerController.lightToggle.getStylesheets().clear();
+        settingsDrawerController.darkToggle.getStylesheets().clear();
     }
 }
