@@ -1,5 +1,6 @@
 package engine;
 
+import controllers.HomeController;
 import dataobjects.Article;
 import dataobjects.MarketWatchRSSFeed;
 import dataobjects.RSSFeedProvider;
@@ -7,6 +8,7 @@ import dataworkers.DataFetcher;
 import dataworkers.RSSFeedFetcher;
 import dataworkers.SentimentAnalyzer;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -24,6 +26,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setMinHeight(400);
         primaryStage.setMinWidth(600);
+        HomeController.setEs(getHostServices());
         primaryStage.setTitle("Stock Crunch");
         Pane root = FXMLLoader.load(getClass().getResource("/Home.fxml"));
         primaryStage.setScene(new Scene(root));

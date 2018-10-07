@@ -14,11 +14,11 @@ public class NasdaqArticleParser {
         if(articleData != null) {
             final String author = articleData.getElementsByClass("article-byline").select("span").get(1).text();
             final Elements body = articleData.getElementById("articlebody").select("p");
-            final Image image = new Image(articleData.getElementsByClass("article-image").first().select("img").attr("src"));
+//            final Image image = new Image(articleData.getElementsByClass("article-image").first().select("img").attr("src"));
 
             article.setAuthor(author);
             article.setBody(body);
-            article.setImage(image);
+//            article.setImage(image);
 
             return true;
         }
