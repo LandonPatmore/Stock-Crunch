@@ -4,6 +4,7 @@ import dataobjects.Article;
 import dataobjects.FeedProvider;
 import dataobjects.MarketWatch;
 import dataworkers.ArticleListFetcher;
+import dataworkers.MarketWatchArticleParser;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,9 +28,16 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
         primaryStage.show();
-        ArrayList<Article> articles = new ArrayList<>();
-        articles = ArticleListFetcher.grabArticles(FeedProvider.MARKET_WATCH, FeedProvider.MARKET_WATCH_URL,
-                MarketWatch.SOFTWARE_STORIES);
+        ArrayList<Article> articles = ArticleListFetcher.grabArticles(FeedProvider.MARKET_WATCH, FeedProvider.MARKET_WATCH_URL,
+                MarketWatch.TOP_STORIES);
+
+        for(Article article : articles){
+            if(MarketWatchArticleParser.getArticleData(article)){
+                System.out.println(article.getBody());
+            }
+
+            System.out.println("\n\n");
+        }
 
         //DashboardLogin.setStage(primaryStage);
     }
