@@ -41,11 +41,20 @@ public class StockFetcher {
         return stocks;
     }*/
 
-    static JSONArray stockDataHistorical(String url){
+    static JSONArray stockDataHistorical(String url, int number, String timeframe){
         JSONArray data;
+        String realURL = "https://api.iextrading.com/1.0/stock/" + url;
+        switch(timeframe){
+            case "m":
+                realURL+="/chart/"+number+"m";
+                break;
+            case "y":
+                realURL+="/chart/"+number+"y";
+                break;
+        }
         try {
             //Document test = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/chart/1y").get();
-            Document test = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/chart/1y").ignoreContentType(true).get();
+            Document test = Jsoup.connect(realURL).ignoreContentType(true).get();
 
             data = new JSONArray(test.text());
         }catch (Exception e){
@@ -76,7 +85,7 @@ public class StockFetcher {
 
 
     public static void main(String[]args){
-        JSONArray name = StockFetcher.stockDataHistorical("aapl");
+        JSONArray name = StockFetcher.stockDataHistorical("aapl", 5, "y");
         System.out.println("test");
 
         JSONObject test = StockFetcher.stockDataCurrent("aapl");
