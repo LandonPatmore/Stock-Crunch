@@ -1,7 +1,7 @@
 # Compiled class file
 *.class
 
-
+*.ser
 
 # Log file
 *.log

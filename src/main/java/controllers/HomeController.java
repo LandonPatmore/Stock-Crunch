@@ -366,7 +366,7 @@ public class HomeController implements Initializable {
                 }
             };
 
-            new Thread(task).run();
+            new Thread(task).start();
         }
     }
 

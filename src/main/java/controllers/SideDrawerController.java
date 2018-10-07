@@ -3,11 +3,13 @@ package controllers;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
+import dataobjects.Favorites;
 import dataobjects.RSSFeedProvider;
 import dataworkers.DataFetcher;
 import dataworkers.RSSFeedFetcher;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -46,24 +48,24 @@ public class SideDrawerController implements Initializable {
     @FXML
     private JFXTextField stockSearchFieldForFavs;
 
-    public ObservableList<String> list = FXCollections.observableArrayList("TSLA", "AAPL", "MSFT", "NVDA", "AMD");
+    public ObservableList<String> list = Favorites.readData() != null ? Favorites.readData() : FXCollections.observableArrayList();
     private boolean isValidTicker = false;
 
     @FXML
-    public void addToFavorites(ActionEvent event){
-        if (validTicker(stockSearchFieldForFavs.getText().toUpperCase())){
+    public void addToFavorites(ActionEvent event) {
+        if (validTicker(stockSearchFieldForFavs.getText().toUpperCase())) {
             list.add(stockSearchFieldForFavs.getText().toUpperCase());
             stockSearchFieldForFavs.clear();
-        } else{
+            Platform.runLater(() -> Favorites.serializeData(list));
+        } else {
             HomeController.setInValidTickerInFavorites(true);
             stockSearchFieldForFavs.clear();
             HomeController.setInValidTickerInFavorites(false);
         }
     }
 
-
     @Override
-    public void initialize(URL url, ResourceBundle rb){
+    public void initialize(URL url, ResourceBundle rb) {
         listView.setItems(list);
         listView.setCellFactory(param -> new deletableCell());
         //listView.setExpanded(true);
@@ -72,13 +74,13 @@ public class SideDrawerController implements Initializable {
 
     static class deletableCell extends ListCell<String> {
         HBox hbox = new HBox();
-        JFXButton text = new JFXButton( "");
+        JFXButton text = new JFXButton("");
         FontAwesomeIconView thumbsDownIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
         private static BooleanProperty openedSideDrawer = new SimpleBooleanProperty(false);
         private String bullish = this.getClass().getClassLoader().getResource("favorites-bullish.css").toExternalForm();
         private String bearish = this.getClass().getClassLoader().getResource("favorites-bearish.css").toExternalForm();
 
-        public static void setOpenedSideDrawer(Boolean x){
+        public static void setOpenedSideDrawer(Boolean x) {
             openedSideDrawer.setValue(x);
         }
 
@@ -92,7 +94,12 @@ public class SideDrawerController implements Initializable {
             text.setMaxWidth(163);
             text.setPrefWidth(163);
             //text.getStylesheets().add(bearish);
-            thumbsDownIcon.setOnMouseClicked(MouseEvent -> getListView().getItems().remove(getItem()));
+            thumbsDownIcon.setOnMouseClicked(MouseEvent -> {
+                Platform.runLater(() -> {
+                    getListView().getItems().remove(getItem());
+                    Favorites.serializeData(getListView().getItems());
+                });
+            });
 
 
             openedSideDrawer.addListener(new ChangeListener<Boolean>() {
@@ -100,8 +107,9 @@ public class SideDrawerController implements Initializable {
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (newValue) {
                         Task task = new Task<Void>() {
-                            @Override public Void call() {
-                                if (SideDrawerController.isBullish(text.getText())){
+                            @Override
+                            public Void call() {
+                                if (SideDrawerController.isBullish(text.getText())) {
                                     text.getStylesheets().clear();
                                     text.getStylesheets().add(bullish);
                                 } else {
@@ -126,7 +134,7 @@ public class SideDrawerController implements Initializable {
             if (item != null && !empty) {
                 text.setText(item);
                 setGraphic(hbox);
-                if (SideDrawerController.isBullish(text.getText())){
+                if (SideDrawerController.isBullish(text.getText())) {
                     text.getStylesheets().clear();
                     text.getStylesheets().add(bullish);
                 } else {
@@ -137,17 +145,17 @@ public class SideDrawerController implements Initializable {
         }
     }
 
-    private boolean validTicker(String ticker){
-        try{
+    private boolean validTicker(String ticker) {
+        try {
             Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker + "/quote").ignoreContentType(true).get();
             return true;
-        }catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
     }
 
-    public static boolean isBullish(String ticker){
-        if(!ticker.equals("")) {
+    public static boolean isBullish(String ticker) {
+        if (!ticker.equals("")) {
             try {
                 Document document = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker + "/quote").ignoreContentType(true).get();
                 JSONObject json = new JSONObject(document.text());
