@@ -24,6 +24,7 @@ public class RSSFeedFetcher {
         final Document xml = DataFetcher.xmlGrabber(providerURL.getValue() + appendedData);
 
         if (xml != null) {
+
             final Elements articles = xml.select("channel").first().select("item");
 
 

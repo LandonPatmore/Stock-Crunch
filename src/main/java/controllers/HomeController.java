@@ -3,6 +3,10 @@ package controllers;
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
 import dataobjects.Article;
+import dataobjects.ArticleSentiment;
+import dataobjects.RSSFeedProvider;
+import dataworkers.RSSFeedFetcher;
+import dataworkers.SentimentAnalyzer;
 import dataworkers.StockFetcher;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -33,11 +37,13 @@ import javafx.scene.web.WebView;
 import javafx.scene.text.Text;
 import model.Settings;
 import org.json.JSONObject;
+import parsers.MarketWatchArticleParser;
 import parsers.NasdaqArticleParser;
 
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -87,6 +93,7 @@ public class HomeController implements Initializable {
     Label change = new Label();
     HBox stats = new HBox();
     HBox headers = new HBox();
+    HBox links = new HBox();
 
     private boolean articleIsOpen = false;
     private SideDrawerController sideDrawerController;
@@ -280,7 +287,7 @@ public class HomeController implements Initializable {
         settingsDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
 
         Label temp = new Label();
-        temp.setText("OPEN\t \tCLOSE\t \tVOLUME\t \tCURRENT\t \tCHANGE\t \tLOW\t \tHIGH");
+        temp.setText("OPEN\t \tCLOSE\t \tVOLUME\t \t \tCURRENT\t \tCHANGE\t \tLOW\t \tHIGH");
         temp.setTextFill(Paint.valueOf("white"));
 
         headers.setSpacing(10);
@@ -358,7 +365,7 @@ public class HomeController implements Initializable {
 
         stockPaneVBox = new VBox();
         stockPaneVBox.setSpacing(10);
-        stockPaneVBox.setAlignment(Pos.CENTER);
+        stockPaneVBox.setAlignment(Pos.TOP_CENTER);
         StackPane.setAlignment(stockPaneVBox, Pos.CENTER);
         stocksInfoPane.getChildren().addAll(stockPaneVBox);
         scrollPaneForStockPane.setContent(stocksInfoPane);
@@ -411,13 +418,15 @@ public class HomeController implements Initializable {
                             linechart = new LineChart(xAxis, yAxis);
                             linechart.setTitle(selectedStock);
                             linechart.setCreateSymbols(false);
-                            linechart.setMaxSize(600,450);
+                            linechart.setMaxSize(1200,450);
                             linechart.setLegendVisible(false);
                             stockPaneVBox.getChildren().addAll(linechart);
                             stockPaneVBox.setVgrow(linechart,Priority.ALWAYS);
                             linechart.setLegendVisible(false);
                             stocksInfoPane.getChildren().addAll(linechart);
                             stockPaneVBox.getChildren().add(linechart);
+                            load(selectedStock);
+                            stockPaneVBox.getChildren().add(links);
                         }
                         else {
                             linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
@@ -448,6 +457,7 @@ public class HomeController implements Initializable {
                             stats.getChildren().add(high);*/
                         }
                         else{
+                            load(selectedStock);
                             loadData(selectedStock);
                         }
                         loadStockGraph.setValue(false);
@@ -531,23 +541,31 @@ public class HomeController implements Initializable {
 
     private void loadData(String url){
         JSONObject object = StockFetcher.stockDataCurrent(url);
-        /*open.setText(object.get("open").toString());
+
+        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() +"\t \t" + object.get("high").toString());
         open.setTextFill(Paint.valueOf("white"));
-        change.setText(object.get("change").toString());
-        change.setTextFill(Paint.valueOf("white"));
-        current.setText(object.get("latestPrice").toString());
-        current.setTextFill(Paint.valueOf("white"));
-        low.setText(object.get("low").toString());
-        low.setTextFill(Paint.valueOf("white"));
-        high.setText(object.get("high").toString());
-        high.setTextFill(Paint.valueOf("white"));
-        close.setText(object.get("close").toString());
-        close.setTextFill(Paint.valueOf("white"));
-        volume.setText(object.get("latestVolume").toString());
-        volume.setTextFill(Paint.valueOf("white"));*/
+    }
+
+    private void load(String url){
+        links.getChildren().clear();
+        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.MARKET_WATCH, RSSFeedProvider.MARKET_WATCH_FEED, url);
+        Label temp;
+        //links.getChildren().add(temp);
+        for(int i = 0; i < 5; i++){
+            MarketWatchArticleParser.getArticleData(articles.get(i));
+            SentimentAnalyzer.getSentimentScore(articles.get(i));
+
+            temp = new Label(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
+            if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
+                temp.setTextFill(Paint.valueOf("green"));
+            }
+            else{
+                temp.setTextFill(Paint.valueOf("red"));
+            }
+
+            links.getChildren().add(temp);
+        }
 
 
-        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() +"\t \t" + object.get("high").toString());
-        open.setTextFill(Paint.valueOf("white"));
     }
 }
