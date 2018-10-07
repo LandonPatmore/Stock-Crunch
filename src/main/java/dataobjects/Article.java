@@ -3,8 +3,6 @@ package dataobjects;
 import org.joda.time.DateTime;
 import org.jsoup.select.Elements;
 
-import java.net.URL;
-
 public class Article {
 
     /**
@@ -13,7 +11,7 @@ public class Article {
     private final String title;
     private final String link;
     private final DateTime dateTime;
-    private final FeedProvider providerName;
+    private final RSSFeedProvider providerName;
 
     /**
      * Data added later after parsing
@@ -25,7 +23,7 @@ public class Article {
     // TODO: Sentiment analysis object added later
 
     // TODO: Get images from article as well
-    public Article(String title, String link, DateTime dateTime, FeedProvider providerName) {
+    public Article(String title, String link, DateTime dateTime, RSSFeedProvider providerName) {
         this.title = title;
         this.dateTime = dateTime;
         this.link = link;
@@ -68,11 +66,11 @@ public class Article {
         return link;
     }
 
-    public FeedProvider getProvider() {
+    public RSSFeedProvider getProvider() {
         return providerName;
     }
 
-    public FeedProvider getProviderName() {
+    public RSSFeedProvider getProviderName() {
         return providerName;
     }
 }

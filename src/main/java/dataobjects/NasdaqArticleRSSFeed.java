@@ -1,12 +1,11 @@
 package dataobjects;
 
-public enum YahooArticle implements ArticleInterface {
-    HEADLINE("headline?s=");
-
+public enum NasdaqArticleRSSFeed implements ArticleInterface {
+    SYMBOL("nasdaq/symbols?symbol=");
 
     private final String value;
 
-    YahooArticle(String value) {
+    NasdaqArticleRSSFeed(String value) {
         this.value = value;
     }
 

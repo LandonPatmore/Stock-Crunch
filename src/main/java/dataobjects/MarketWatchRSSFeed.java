@@ -1,6 +1,6 @@
 package dataobjects;
 
-public enum MarketWatch implements ArticleInterface {
+public enum MarketWatchRSSFeed implements ArticleInterface {
     BREAKING_NEWS_BULELTINS("bulletins"),
     FINANCIAL("financial"),
     INTERNET_STORIES("internet"),
@@ -13,7 +13,7 @@ public enum MarketWatch implements ArticleInterface {
 
     private final String value;
 
-    MarketWatch(String value) {
+    MarketWatchRSSFeed(String value) {
         this.value = value;
     }
 

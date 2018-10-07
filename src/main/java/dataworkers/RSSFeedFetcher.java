@@ -1,8 +1,7 @@
 package dataworkers;
 
 import dataobjects.Article;
-import dataobjects.ArticleInterface;
-import dataobjects.FeedProvider;
+import dataobjects.RSSFeedProvider;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -13,16 +12,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.util.ArrayList;
 
-public class ArticleListFetcher {
+public class RSSFeedFetcher {
 
     private static final DateTimeParser[] parsers = {
             DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss z").getParser(),
             DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss Z").getParser()};
     private static final DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(null, parsers).toFormatter();
 
-    public static ArrayList<Article> grabArticles(FeedProvider provider, FeedProvider providerURL, ArticleInterface typeOfFeed) {
+    public static ArrayList<Article> grabArticles(RSSFeedProvider provider, RSSFeedProvider providerURL, String appendedData) {
         final ArrayList<Article> articleList = new ArrayList<>();
-        final Document xml = DataFetcher.xmlGrabber(providerURL.getValue() + typeOfFeed.getValue());
+        final Document xml = DataFetcher.xmlGrabber(providerURL.getValue() + appendedData);
 
         if (xml != null) {
             final Elements articles = xml.select("channel").get(0).select("item");
