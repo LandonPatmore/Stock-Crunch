@@ -7,6 +7,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
 
+import java.io.IOException;
+
 public class DataFetcher {
 
     // TODO: Add authentication as well for endpoints
@@ -32,7 +34,7 @@ public class DataFetcher {
         }
     }
 
-    public static Document htmlGrabber(String url) {
+    public static Document htmlGrabber(String url) throws IOException {
         return Jsoup.connect(url).get();
     }
 }
