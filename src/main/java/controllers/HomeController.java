@@ -313,13 +313,19 @@ public class HomeController implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
                     if (!SideDrawerController.getSelectedStock().equals("")) {
+                        if(linechart!=null) {
+                            linechart.getData().clear();
+                        }
                         String selectedStock = SideDrawerController.getSelectedStock();
                         CategoryAxis xAxis = new CategoryAxis();
                         NumberAxis yAxis = new NumberAxis();
                         yAxis.setForceZeroInRange(false);
                         linechart = new LineChart(xAxis, yAxis);
+                        String graph = this.getClass().getClassLoader().getResource("graph.css").toExternalForm();
+                        linechart.getStylesheets().add(graph);
                         loadGraph(selectedStock,1,"d",100);
                         stocksInfoPane.getChildren().addAll(linechart);
+                        loadStockGraph.setValue(false);
                     }
                 }
             }
