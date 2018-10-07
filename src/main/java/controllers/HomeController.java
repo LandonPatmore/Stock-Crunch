@@ -71,6 +71,7 @@ public class HomeController implements Initializable {
     private JFXTextField stockSearchField;
     private ScrollPane scrollPaneForStockPane = new ScrollPane();
     private StackPane stocksInfoPane = new StackPane();
+    private JFXButton searchButton = new JFXButton();
 
     public static void setSetThemDarkTrue(){
         setThemeDark.setValue(true);
@@ -140,6 +141,7 @@ public class HomeController implements Initializable {
         scrollPaneForStockPane.setId("scrollPaneForStockPane");
         sideDrawerController.dashboardDrawerVBox.setId("sidedrawervbox");
         sideDrawerController.listView.setId("sidedrawerlistview");
+        sideDrawerController.spacerPane.setId("spacerpane");
         settingsDrawerController.settingsPane.setId("settingsdrawerpane");
 
         //Make stuff resize right
@@ -216,6 +218,7 @@ public class HomeController implements Initializable {
         String searchCss = this.getClass().getClassLoader().getResource("stock-search-style.css").toExternalForm();
         stockSearchField.getStylesheets().add(searchCss);
         StackPane.setAlignment(stockSearchField, Pos.CENTER);
+        searchButton = new JFXButton();
         stocksInfoPane.getChildren().addAll(stockSearchField);
         scrollPaneForStockPane.setContent(stocksInfoPane);
         scrollPaneForStockPane.setPannable(true);
@@ -238,6 +241,7 @@ public class HomeController implements Initializable {
         scrollPaneForStockPane.getStylesheets().add(css);
         sideDrawerController.dashboardDrawerVBox.getStylesheets().add(css);
         sideDrawerController.listView.getStylesheets().add(css);
+        sideDrawerController.spacerPane.getStylesheets().add(css);
         settingsDrawerController.settingsPane.getStylesheets().add(css);
         settingsDrawerController.lightToggle.getStylesheets().add(css);
         settingsDrawerController.darkToggle.getStylesheets().add(css);
@@ -253,6 +257,7 @@ public class HomeController implements Initializable {
         scrollPaneForStockPane.getStylesheets().clear();
         sideDrawerController.dashboardDrawerVBox.getStylesheets().clear();
         sideDrawerController.listView.getStylesheets().clear();
+        sideDrawerController.spacerPane.getStylesheets().clear();
         settingsDrawerController.settingsPane.getStylesheets().clear();
         settingsDrawerController.lightToggle.getStylesheets().clear();
         settingsDrawerController.darkToggle.getStylesheets().clear();

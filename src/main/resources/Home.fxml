@@ -40,7 +40,7 @@
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <Text fill="WHITE" opacity="0.05" strokeType="OUTSIDE" strokeWidth="0.0" text="Logo Placeholder" GridPane.columnIndex="1">
+            <Text fill="WHITE" opacity="0.75" strokeType="OUTSIDE" strokeWidth="0.0" text="Stock Crunch" GridPane.columnIndex="1">
                <font>
                   <Font name="System Font" size="19.0" />
                </font>

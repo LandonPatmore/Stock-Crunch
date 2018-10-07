@@ -30,6 +30,11 @@
     -fx-background-color: #353b48;
 }
 
+#spacerPane{
+    -fx-background-color: #2f3640;
+}
+
+
 .jfx-drawer-overlay-pane {
     -fx-background-color: #218c74;
 }

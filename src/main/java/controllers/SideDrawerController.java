@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,6 +17,9 @@ public class SideDrawerController implements Initializable {
 
     @FXML
     public VBox dashboardDrawerVBox;
+
+    @FXML
+    public Pane spacerPane;
 
     ObservableList<String> list = FXCollections.observableArrayList("Test 1","Test 2","Test 3", "Test 4");
 
