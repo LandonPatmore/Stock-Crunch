@@ -1,14 +1,10 @@
 package engine;
 
 import dataobjects.MarketWatch;
-import dataworkers.DataFetcher;
-import dataworkers.MarketWatchParser;
+import dataworkers.ArticleListFetcher;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -28,6 +24,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
         primaryStage.show();
+        ArticleListFetcher.grabArticles(MarketWatch.TOP_STORIES);
         //DashboardLogin.setStage(primaryStage);
     }
 }

@@ -1,6 +1,6 @@
 package dataobjects;
 
-public enum MarketWatch {
+public enum MarketWatch implements ArticleTypes {
     BREAKING_NEWS_BULELTINS("bulletins"),
     FINANCIAL("financial"),
     INTERNET_STORIES("internet"),
