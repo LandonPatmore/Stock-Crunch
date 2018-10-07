@@ -23,9 +23,9 @@ public class ArticleListFetcher {
             DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss Z").getParser()};
     private static final DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(null, parsers).toFormatter();
 
-    public static ArrayList<Article> grabArticles(FeedProvider provider, ArticleInterface typeOfFeed) {
+    public static ArrayList<Article> grabArticles(FeedProvider provider, FeedProvider providerURL, ArticleInterface typeOfFeed) {
         final ArrayList<Article> articleList = new ArrayList<>();
-        final Document xml = DataFetcher.xmlGrabber(provider.getValue() + typeOfFeed.getValue());
+        final Document xml = DataFetcher.xmlGrabber(providerURL.getValue() + typeOfFeed.getValue());
 
         try {
             if (xml != null) {
@@ -37,7 +37,7 @@ public class ArticleListFetcher {
                     final DateTime pubDate = formatter.parseDateTime(e.select("pubDate").first().text());
                     System.out.println(e.select("description").first().text());
 
-                    articleList.add(new Article(title, link, pubDate));
+                    articleList.add(new Article(title, link, pubDate, provider));
                 }
             }
 

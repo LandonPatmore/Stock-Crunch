@@ -26,7 +26,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
         primaryStage.show();
-        ArticleListFetcher.grabArticles(FeedProvider.MARKET_WATCH, MarketWatch.SOFTWARE_STORIES);
+        ArticleListFetcher.grabArticles(FeedProvider.MARKET_WATCH, FeedProvider.MARKET_WATCH_URL, MarketWatch.SOFTWARE_STORIES);
         //DashboardLogin.setStage(primaryStage);
     }
 }
