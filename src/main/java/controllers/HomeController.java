@@ -6,7 +6,6 @@ import dataobjects.*;
 import dataworkers.RSSFeedFetcher;
 import dataworkers.SentimentAnalyzer;
 import dataworkers.StockFetcher;
-import engine.Main;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -21,7 +20,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -32,21 +30,19 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.text.Text;
 import model.Settings;
 import org.json.JSONObject;
-import parsers.MarketWatchArticleParser;
 import parsers.NasdaqArticleParser;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -294,14 +290,8 @@ public class HomeController implements Initializable {
         sideDrawer.prefHeightProperty().bind(anchorPane.heightProperty());
         settingsDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
 
-        Label temp = new Label();
-        temp.setText("OPEN\t \tCLOSE\t \tVOLUME\t \t \tCURRENT\t \tCHANGE\t \tLOW\t \tHIGH");
-        temp.setTextFill(Paint.valueOf("white"));
-
         headers.setSpacing(10);
         headers.setAlignment(Pos.CENTER);
-
-        headers.getChildren().add(temp);
 
         sideDrawer.setVisible(false);
         settingsDrawer.setVisible(false);
@@ -328,22 +318,14 @@ public class HomeController implements Initializable {
                 //This starts a Thread but immediately schedules it to run after 500 milliseconds, so the drawer closing animation can run before making the drawer invisible
                 //Thanks for writing this Doug Lea
                 final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
-                executor.schedule(new Runnable() {
-                    @Override
-                    public void run() {
-                        sideDrawer.setVisible(false);
-                        hamburger.setDisable(false);
-                    }
+                executor.schedule(() -> {
+                    sideDrawer.setVisible(false);
+                    hamburger.setDisable(false);
                 }, 500, TimeUnit.MILLISECONDS);
             } else {
                 sideDrawer.setVisible(true);
                 sideDrawer.open();
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        SideDrawerController.deletableCell.setOpenedSideDrawer(true);
-                    }
-                });
+                Platform.runLater(() -> SideDrawerController.deletableCell.setOpenedSideDrawer(true));
                 //sideDrawerController.expandListView();
             }
         });
@@ -439,7 +421,7 @@ public class HomeController implements Initializable {
                                 linechart.setLegendVisible(false);
                                 stocksInfoPane.getChildren().addAll(linechart);
                                 stockPaneVBox.getChildren().add(linechart);
-                                load(selectedStock);
+                                sentimentAnalysis(selectedStock);
                                 links.setAlignment(Pos.CENTER);
 
                             } else {
@@ -448,7 +430,7 @@ public class HomeController implements Initializable {
                             linechart.setTitle(selectedStock);
                             String graph = this.getClass().getClassLoader().getResource("graph-bullish.css").toExternalForm();
                             linechart.getStylesheets().add(graph);
-                            loadGraph(selectedStock, 1, "d", 100);
+                            loadGraph(selectedStock);
                             if (!stockPaneVBox.getChildren().contains(headers)) {
                                 stockPaneVBox.getChildren().add(headers);
                             }
@@ -458,19 +440,11 @@ public class HomeController implements Initializable {
                                 stats.setSpacing(15);
                                 stats.setAlignment(Pos.CENTER);
 
-
-                                stats.getChildren().add(open);
-
                                 stockPaneVBox.getChildren().add(stats);
                                 stockPaneVBox.getChildren().add(links);
-                            /*stats.getChildren().add(close);
-                            stats.getChildren().add(volume);
-                            stats.getChildren().add(current);
-                            stats.getChildren().add(change);
-                            stats.getChildren().add(low);
-                            stats.getChildren().add(high);*/
+
                             } else {
-                                load(selectedStock);
+                                sentimentAnalysis(selectedStock);
                                 loadData(selectedStock);
                             }
                             loadStockGraph.setValue(false);
@@ -548,9 +522,10 @@ public class HomeController implements Initializable {
         }
     }
 
-    private void loadGraph(String url, int num, String timeframe, int totalNum) {
+    private void loadGraph(String url) {
+        links.getChildren().clear();
         Platform.runLater(() -> {
-            linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, num, timeframe), totalNum));
+            linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, 1, "d"), 100));
             linechart.setVisible(true);
         });
     }
@@ -558,55 +533,67 @@ public class HomeController implements Initializable {
     private void loadData(String url) {
         JSONObject object = StockFetcher.stockDataCurrent(url);
 
-        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() + "\t \t" + object.get("high").toString());
-        open.setTextFill(Paint.valueOf("white"));
+        if (object != null) {
+            open.setText(String.format("%s\n%s", "OPEN", object.get("open")));
+            close.setText(String.format("%s\n%s", "CLOSE", object.get("close")));
+            volume.setText(String.format("%s\n%s", "VOLUME", object.get("latestVolume")));
+            current.setText(String.format("%s\n%s", "CURRENT", object.get("latestPrice")));
+            change.setText(String.format("%s\n%s", "CHANGE", object.get("change")));
+            low.setText(String.format("%s\n%s", "LOW", object.get("low")));
+            high.setText(String.format("%s\n%s", "HIGH", object.get("high")));
+
+            open.setTextAlignment(TextAlignment.CENTER);
+            close.setTextAlignment(TextAlignment.CENTER);
+            volume.setTextAlignment(TextAlignment.CENTER);
+            current.setTextAlignment(TextAlignment.CENTER);
+            change.setTextAlignment(TextAlignment.CENTER);
+            low.setTextAlignment(TextAlignment.CENTER);
+            high.setTextAlignment(TextAlignment.CENTER);
+
+            open.setTextFill(Paint.valueOf("white"));
+            close.setTextFill(Paint.valueOf("white"));
+            volume.setTextFill(Paint.valueOf("white"));
+            current.setTextFill(Paint.valueOf("white"));
+            change.setTextFill(Paint.valueOf("white"));
+            low.setTextFill(Paint.valueOf("white"));
+            high.setTextFill(Paint.valueOf("white"));
+        }
+
+        stats.getChildren().addAll(close, volume, current, change, low, high);
     }
 
-
-    private void load(String url){
+    private void sentimentAnalysis(String ticker) {
         final Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() {
-                links.getChildren().clear();
-                ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue()+url);
-                Hyperlink temp;
-                //links.getChildren().add(temp);
-                for(int i = 0; i < 5; i++){
+                ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue() + ticker);
+                for (int i = 0; i < (articles.size() > 5 ? 5 : articles.size()); i++) {
+                    System.out.println("CURRENT: " + articles.get(i).getTitle());
                     NasdaqArticleParser.getArticleData(articles.get(i));
-                    SentimentAnalyzer.getSentimentScore(articles.get(i));
-                    final Article current = articles.get(i);
-                    temp = new Hyperlink(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
-                    temp.setOnAction((ActionEvent event) -> {
-                        Hyperlink h = (Hyperlink) event.getTarget();
-                        String s = current.getLink();
-                        hs.showDocument(s);
-                        event.consume();
-                    });
-                    if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
-                        temp.setText(temp.getText());
-                        temp.setTextFill(Paint.valueOf("green"));
-                    }
-                    else{
-                        temp.setText(temp.getText());
-                        temp.setTextFill(Paint.valueOf("red"));
-                    }
-                    links.getChildren().add(temp);
+//                    SentimentAnalyzer.getSentimentScore(articles.get(i));
                 }
-                Label test;
-
-                String testString = StockFetcher.changeSince(articles.get(0).getDateForChange(), url);
-                test = new Label("Total Change Since Articles: ");
-                if(testString.charAt(0) == '-'){
-                    test.setTextFill(Paint.valueOf("red"));
-                }
-                else{
-                    test.setTextFill(Paint.valueOf("green"));
-                }
-                links.getChildren().add(test);
+                Platform.runLater(() -> loadArticleData(articles));
                 return null;
             }
         };
-        
+
         new Thread(task).start();
+    }
+
+    private void loadArticleData(ArrayList<Article> articles) {
+        for (Article article : articles) {
+            System.out.println(article.getSentiment());
+            final Hyperlink hyperlink = new Hyperlink(article.getTitle() + " || " + article.getSentiment());
+            if(article.getSentiment().contains("bearish")) {
+                hyperlink.setTextFill(Paint.valueOf("#c0392b"));
+            } else {
+                hyperlink.setTextFill(Paint.valueOf("#2ecc71"));
+            }
+            hyperlink.setOnAction(event -> {
+                hs.showDocument(article.getLink());
+                event.consume();
+            });
+            links.getChildren().add(hyperlink);
+        }
     }
 }

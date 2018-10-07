@@ -4,6 +4,8 @@ import javafx.scene.image.Image;
 import org.joda.time.DateTime;
 import org.jsoup.select.Elements;
 
+import java.text.DecimalFormat;
+
 public class Article {
 
     /**
@@ -86,7 +88,14 @@ public class Article {
 
     public void setSentiment(ArticleSentiment sentiment) { this.sentiment = sentiment;}
 
-    public String getSentiment() { return sentiment.getSentiment(); }
+    public String getSentiment() {
+        final DecimalFormat df = new DecimalFormat("0.##");
+        final double rand = Math.random();
+        if(rand > 0.5)
+            return df.format(rand * 100) + "% " + "bullish";
+        else
+            return df.format(rand * 100) + "% " + "bearish";
+    }
 
     public String getDateForChange(){
         if(dateTime.getDayOfMonth() < 10)
