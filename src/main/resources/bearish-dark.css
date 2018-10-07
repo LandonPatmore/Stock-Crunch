@@ -93,3 +93,11 @@
 .jfx-button {
     -fx-text-fill: #c0392b;
 }
+
+body {
+    background: #353b48;
+}
+
+body > p {
+    color: rgba(255,255,255,0.75);
+}

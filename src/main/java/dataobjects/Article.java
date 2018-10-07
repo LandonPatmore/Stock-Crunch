@@ -1,5 +1,6 @@
 package dataobjects;
 
+import javafx.scene.image.Image;
 import org.joda.time.DateTime;
 import org.jsoup.select.Elements;
 
@@ -21,6 +22,7 @@ public class Article {
     private Elements body;
     private String copyright;
     private ArticleSentiment sentiment;
+    private Image image;
 
     // TODO: Get images from article as well
     public Article(String title, String link, DateTime dateTime, RSSFeedProvider providerName) {
@@ -52,6 +54,14 @@ public class Article {
 
     public void setCopyright(String copyright) {
         this.copyright = copyright;
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    public void setImage(Image image) {
+        this.image = image;
     }
 
     public String getTitle() {
