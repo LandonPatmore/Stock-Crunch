@@ -1,6 +1,8 @@
 package engine;
 
+import dataobjects.FeedProvider;
 import dataobjects.MarketWatch;
+import dataobjects.YahooArticle;
 import dataworkers.ArticleListFetcher;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -24,7 +26,7 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
         primaryStage.show();
-        ArticleListFetcher.grabArticles(MarketWatch.TOP_STORIES);
+        ArticleListFetcher.grabArticles(FeedProvider.MARKET_WATCH, MarketWatch.SOFTWARE_STORIES);
         //DashboardLogin.setStage(primaryStage);
     }
 }

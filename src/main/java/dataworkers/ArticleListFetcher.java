@@ -1,17 +1,14 @@
 package dataworkers;
 
-import dataobjects.Article;
-import dataobjects.ArticleTypes;
-import dataobjects.MarketWatch;
+import dataobjects.ArticleInterface;
+import dataobjects.FeedProvider;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 import org.joda.time.format.DateTimeParser;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.parser.Parser;
 import org.jsoup.select.Elements;
 
 import java.net.MalformedURLException;
@@ -25,8 +22,8 @@ public class ArticleListFetcher {
             DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss Z").getParser()};
     private static final DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(null, parsers).toFormatter();
 
-    public static ArrayList<String> grabArticles(String url, ArticleTypes typeOfFeed) {
-        final Document xml = DataFetcher.xmlGrabber(url + typeOfFeed.getEndpoint());
+    public static ArrayList<String> grabArticles(FeedProvider provider, ArticleInterface typeOfFeed) {
+        final Document xml = DataFetcher.xmlGrabber(provider.getValue() + typeOfFeed.getValue());
 
         try {
             if (xml != null) {

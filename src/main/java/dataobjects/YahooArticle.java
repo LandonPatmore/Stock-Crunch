@@ -1,18 +1,16 @@
 package dataobjects;
 
-public enum YahooArticle implements ArticleTypes {
-
+public enum YahooArticle implements ArticleInterface {
     HEADLINE("headline?s=");
 
 
-    private final String endpoint;
+    private final String value;
 
-    YahooArticle(String endpoint) {
-        this.endpoint = endpoint;
+    YahooArticle(String value) {
+        this.value = value;
     }
 
-    @Override
-    public String getEndpoint() {
-        return endpoint;
+    public String getValue() {
+        return value;
     }
 }
