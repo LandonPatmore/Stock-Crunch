@@ -7,15 +7,20 @@ import dataobjects.NasdaqArticleRSSFeed;
 import dataobjects.RSSFeedProvider;
 import dataworkers.DataFetcher;
 import dataworkers.RSSFeedFetcher;
+import dataworkers.StockFetcher;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -24,6 +29,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import javafx.scene.text.Text;
 import model.Settings;
 import parsers.NasdaqArticleParser;
 
@@ -68,6 +74,9 @@ public class HomeController implements Initializable {
     @FXML
     ColumnConstraints gridPaneRight;
 
+    @FXML
+    LineChart linechart;
+
     private SideDrawerController sideDrawerController;
     private SettingsDrawerController settingsDrawerController;
     private String darkBullish = "bullish-dark.css";
@@ -84,6 +93,7 @@ public class HomeController implements Initializable {
     private ScrollPane scrollPaneForStockPane = new ScrollPane();
     private StackPane stocksInfoPane = new StackPane();
     private JFXButton searchButton = new JFXButton();
+    private static BooleanProperty inValidTickerInFavorites = new SimpleBooleanProperty(false);
 
     public static void setSetThemDarkTrue(){
         setThemeDark.setValue(true);
@@ -93,6 +103,10 @@ public class HomeController implements Initializable {
     public static void setSetThemLightTrue(){
         setThemeLight.setValue(true);
         Settings.setTheme("light");
+    }
+
+    public static void setInValidTickerInFavorites(Boolean x){
+        inValidTickerInFavorites.setValue(x);
     }
 
     @Override
@@ -260,6 +274,28 @@ public class HomeController implements Initializable {
             setThemeLight.setValue(true);
         }
 
+        //((NumberAxis) linechart.getYAxis()).setForceZeroInRange(false);
+        //linechart.setVisible(false);
+        inValidTickerInFavorites.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    JFXDialogLayout content = new JFXDialogLayout();
+                    content.setHeading(new Text("Invalid Ticker!"));
+                    content.setBody(new Text("No stock was found under that ticker, please try again."));
+                    JFXDialog wrongInfo = new JFXDialog(stocksInfoPane,content, JFXDialog.DialogTransition.LEFT);
+                    JFXButton button =  new JFXButton("Okay");
+                    button.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            wrongInfo.close();
+                        }
+                    });
+                    content.setActions(button);
+                    wrongInfo.show();
+                }
+            }
+        });
     }
 
     private void addStyleSheets() {
@@ -303,5 +339,10 @@ public class HomeController implements Initializable {
         webEngine.loadContent(article.getBody().toString());
 
         mainSplitPane.getItems().add(scrollPane);
+    }
+
+    private void loadGraph(String url, int num, String timeframe, int totalNum){
+        linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, num, timeframe), totalNum));
+        linechart.setVisible(true);
     }
 }

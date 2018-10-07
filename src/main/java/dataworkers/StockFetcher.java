@@ -41,7 +41,7 @@ public class StockFetcher {
         return stocks;
     }*/
 
-    static JSONArray stockDataHistorical(String url, int number, String timeframe){
+    public static JSONArray stockDataHistorical(String url, int number, String timeframe){
         JSONArray data;
         String realURL = "https://api.iextrading.com/1.0/stock/" + url;
         switch(timeframe){
@@ -66,7 +66,7 @@ public class StockFetcher {
     }
 
 
-    static JSONObject stockDataCurrent(String url){
+    public static JSONObject stockDataCurrent(String url){
         JSONObject data;
         try{
             Document rawData = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/quote").ignoreContentType(true).get();
