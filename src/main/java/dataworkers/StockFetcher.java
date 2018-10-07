@@ -51,6 +51,9 @@ public class StockFetcher {
             case "y":
                 realURL+="/chart/"+number+"y";
                 break;
+             case "d":
+                realURL+="/chart/"+number+"d";
+                break;
         }
         try {
             //Document test = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/chart/1y").get();
