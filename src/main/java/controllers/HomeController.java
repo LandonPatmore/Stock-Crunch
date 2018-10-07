@@ -385,10 +385,13 @@ public class HomeController implements Initializable {
         StackPane.setAlignment(stockPaneVBox, Pos.CENTER);
         stocksInfoPane.getChildren().addAll(stockPaneVBox);
         scrollPaneForStockPane.setContent(stocksInfoPane);
+        scrollPaneForStockPane.setHmax(1);
+        scrollPaneForStockPane.maxHeightProperty().bind(anchorPane.heightProperty());
         stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
                 scrollPaneForStockPane.getViewportBounds().getWidth(), scrollPaneForStockPane.viewportBoundsProperty()));
         stocksInfoPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
                 scrollPaneForStockPane.getViewportBounds().getHeight(), scrollPaneForStockPane.viewportBoundsProperty()));
+        stocksInfoPane.setMaxHeight(Double.MAX_VALUE);
 
         mainSplitPane.getItems().add(scrollPaneForStockPane);
 
@@ -449,7 +452,6 @@ public class HomeController implements Initializable {
                         String graph = this.getClass().getClassLoader().getResource("graph-bullish.css").toExternalForm();
                         linechart.getStylesheets().add(graph);
                         loadGraph(selectedStock,1,"d",100);
-                        //if(!stocksInfoPane.getChildren().contains(linechart));
                         if(!stockPaneVBox.getChildren().contains(headers)){
                             stockPaneVBox.getChildren().add(headers);
                         }
