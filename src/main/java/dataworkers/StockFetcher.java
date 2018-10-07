@@ -58,11 +58,11 @@ public class StockFetcher {
 
 
     static JSONObject stockDataCurrent(String url){
+        JSONObject data;
         try{
+            Document rawData = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/quote").ignoreContentType(true).get();
 
-
-
-
+            data = new JSONObject(rawData.text());
 
         }catch (Exception e){
             System.out.println(e.getLocalizedMessage());
@@ -71,12 +71,15 @@ public class StockFetcher {
 
 
 
-        return null;
+        return data;
     }
 
 
     public static void main(String[]args){
         JSONArray name = StockFetcher.stockDataHistorical("aapl");
+        System.out.println("test");
+
+        JSONObject test = StockFetcher.stockDataCurrent("aapl");
         System.out.println("test");
     }
 }
