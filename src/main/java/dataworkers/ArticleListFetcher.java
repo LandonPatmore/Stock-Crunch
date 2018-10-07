@@ -11,9 +11,6 @@ import org.joda.time.format.DateTimeParser;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class ArticleListFetcher {
@@ -34,7 +31,6 @@ public class ArticleListFetcher {
                 final String title = e.select("title").first().text();
                 final String link = e.select("link").first().text();
                 final DateTime pubDate = formatter.parseDateTime(e.select("pubDate").first().text());
-                //System.out.println(e.select("description").first().text());
 
                 articleList.add(new Article(title, link, pubDate, provider));
             }

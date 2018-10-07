@@ -1,6 +1,6 @@
 package dataobjects;
 
-public enum FeedProvider implements ArticleInterface{
+public enum FeedProvider{
 
     YAHOO("YAHOO"),
     MARKET_WATCH("MARKET WATCH"),

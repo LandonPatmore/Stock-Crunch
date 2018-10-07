@@ -1,6 +1,7 @@
 package dataobjects;
 
 import org.joda.time.DateTime;
+import org.jsoup.select.Elements;
 
 import java.net.URL;
 
@@ -10,7 +11,7 @@ public class Article {
      * Initial Data
      */
     private final String title;
-    private final String provider;
+    private final String link;
     private final DateTime dateTime;
     private final FeedProvider providerName;
 
@@ -19,15 +20,15 @@ public class Article {
      */
 
     private String author;
-    private String body;
+    private Elements body;
     private String copyright;
     // TODO: Sentiment analysis object added later
 
     // TODO: Get images from article as well
-    public Article(String title, String provider, DateTime dateTime, FeedProvider providerName) {
+    public Article(String title, String link, DateTime dateTime, FeedProvider providerName) {
         this.title = title;
         this.dateTime = dateTime;
-        this.provider = provider;
+        this.link = link;
         this.providerName = providerName;
     }
 
@@ -39,11 +40,11 @@ public class Article {
         this.author = author;
     }
 
-    public String getBody() {
+    public Elements getBody() {
         return body;
     }
 
-    public void setBody(String body) {
+    public void setBody(Elements body) {
         this.body = body;
     }
 
@@ -64,11 +65,11 @@ public class Article {
     }
 
     public String getLink() {
-        return provider;
+        return link;
     }
 
-    public String getProvider() {
-        return provider;
+    public FeedProvider getProvider() {
+        return providerName;
     }
 
     public FeedProvider getProviderName() {
