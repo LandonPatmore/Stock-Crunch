@@ -95,7 +95,7 @@ public class StockFetcher {
 
             if (thenPrice < Double.MAX_VALUE && nowPrice < Double.MAX_VALUE) {
                 DecimalFormat df = new DecimalFormat("0.##");
-                return df.format(calculateChange(thenPrice, nowPrice));
+                return df.format(calculateChange(thenPrice, nowPrice)) + " %";
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

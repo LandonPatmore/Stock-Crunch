@@ -575,15 +575,27 @@ public class HomeController implements Initializable {
                 event.consume();
             });
             if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
+                temp.setText(temp.getText());
                 temp.setTextFill(Paint.valueOf("green"));
             }
             else{
+                temp.setText(temp.getText());
                 temp.setTextFill(Paint.valueOf("red"));
             }
 
             links.getChildren().add(temp);
         }
+        Label test;
 
+        String testString = StockFetcher.changeSince(articles.get(0).getDateForChange(), url);
+        test = new Label("Total Change Since Articles: ");
+        if(testString.charAt(0) == '-'){
+            test.setTextFill(Paint.valueOf("red"));
+        }
+        else{
+            test.setTextFill(Paint.valueOf("green"));
+        }
+        links.getChildren().add(test);
 
     }
 }
