@@ -31,4 +31,8 @@ public class DataFetcher {
             return null;
         }
     }
+
+    public static Document htmlGrabber(String url) {
+        return Jsoup.connect(url).get();
+    }
 }
