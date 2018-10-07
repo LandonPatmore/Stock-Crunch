@@ -16,7 +16,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import org.json.JSONObject;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
 
 import java.net.URL;
@@ -110,4 +112,16 @@ public class SideDrawerController implements Initializable {
         }
     }
 
+    public boolean isBullish(String ticker){
+        try{
+            Document document = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker + "/quote").ignoreContentType(true).get();
+            JSONObject json = new JSONObject(document.toString());
+            if(Integer.parseInt(json.get("change").toString()) < 0){
+                return false;
+            }
+        }catch (Exception e){
+            return false;
+        }
+        return true;
+    }
 }
