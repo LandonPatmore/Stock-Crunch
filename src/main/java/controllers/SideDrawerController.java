@@ -5,23 +5,19 @@ import com.jfoenix.controls.JFXListView;
 import com.jfoenix.controls.JFXTextField;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
 import org.jsoup.Jsoup;
+
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -40,7 +36,7 @@ public class SideDrawerController implements Initializable {
     @FXML
     private JFXTextField stockSearchFieldForFavs;
 
-    public ObservableList<String> list = FXCollections.observableArrayList("Item 1", "Item 2", "Item 3", "Item 4");
+    public ObservableList<String> list = FXCollections.observableArrayList("TSLA", "AAPL", "MSFT", "NVDA", "AMD");
     private boolean isValidTicker = false;
 
     @FXML
@@ -77,8 +73,8 @@ public class SideDrawerController implements Initializable {
             hbox.getChildren().addAll(text, thumbsDownIcon);
             hbox.setAlignment(Pos.CENTER);
             text.setAlignment(Pos.CENTER_LEFT);
-            text.setMaxWidth(165);
-            text.setPrefWidth(165);
+            text.setMaxWidth(163);
+            text.setPrefWidth(163);
             thumbsDownIcon.setOnMouseClicked(MouseEvent -> getListView().getItems().remove(getItem()));
         }
 

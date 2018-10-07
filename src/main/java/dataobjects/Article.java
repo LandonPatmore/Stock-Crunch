@@ -20,7 +20,6 @@ public class Article {
     private String author;
     private Elements body;
     private String copyright;
-    // TODO: Sentiment analysis object added later
     private ArticleSentiment sentiment;
 
     // TODO: Get images from article as well

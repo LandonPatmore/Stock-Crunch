@@ -33,7 +33,7 @@ public class SentimentAnalyzer {
 
         ArticleSentiment sentiment = new ArticleSentiment(articleScore);
 
-        a.setSentiment(new ArticleSentiment(articleScore));
+        a.setSentiment(sentiment);
     }
 
     private static int analyzeSentiment(String sentence) {
@@ -51,11 +51,16 @@ public class SentimentAnalyzer {
             Tree tree = s.get(SentimentCoreAnnotations.SentimentAnnotatedTree.class);
             sentimentScore = RNNCoreAnnotations.getPredictedClass(new CoreLabel(tree.label()));
         }
+
         return sentimentScore;
     }
 
     private static String[] getSentences(Article a) {
-        String text = a.getBody().text();
+
+        String text = "";
+
+        if(a.getBody() != null)
+            text = a.getBody().text();
 
         text = text.replace(". ", ".~");
         text = text.replace("? ", ".~");
