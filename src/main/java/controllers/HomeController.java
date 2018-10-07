@@ -76,10 +76,8 @@ public class HomeController implements Initializable {
     @FXML
     ColumnConstraints gridPaneRight;
 
-    @FXML
-    LineChart linechart;
-    private boolean articleIsOpen = false;
 
+    private boolean articleIsOpen = false;
     private SideDrawerController sideDrawerController;
     private SettingsDrawerController settingsDrawerController;
     private String darkBullish = "bullish-dark.css";
@@ -97,6 +95,9 @@ public class HomeController implements Initializable {
     private StackPane stocksInfoPane = new StackPane();
     private JFXButton searchButton;
     private static BooleanProperty inValidTickerInFavorites = new SimpleBooleanProperty(false);
+    private static BooleanProperty loadStockGraph = new SimpleBooleanProperty(false);
+    private LineChart linechart;
+
 
     public static void setSetThemDarkTrue(){
         setThemeDark.setValue(true);
@@ -110,6 +111,10 @@ public class HomeController implements Initializable {
 
     public static void setInValidTickerInFavorites(Boolean x){
         inValidTickerInFavorites.setValue(x);
+    }
+
+    public static void setLoadStockGraph(){
+        loadStockGraph.setValue(true);
     }
 
     @Override
@@ -298,6 +303,23 @@ public class HomeController implements Initializable {
                     });
                     content.setActions(button);
                     wrongInfo.show();
+                }
+            }
+        });
+
+        loadStockGraph.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    if (!SideDrawerController.getSelectedStock().equals("")) {
+                        String selectedStock = SideDrawerController.getSelectedStock();
+                        NumberAxis xAxis = new NumberAxis();
+                        NumberAxis yAxis = new NumberAxis();
+                        yAxis.setForceZeroInRange(false);
+                        linechart = new LineChart(xAxis, yAxis);
+                        loadGraph(selectedStock,1,"d",100);
+                        stocksInfoPane.getChildren().addAll(linechart);
+                    }
                 }
             }
         });

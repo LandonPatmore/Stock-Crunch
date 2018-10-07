@@ -21,6 +21,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Control;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -50,6 +51,11 @@ public class SideDrawerController implements Initializable {
 
     public ObservableList<String> list = Favorites.readData() != null ? Favorites.readData() : FXCollections.observableArrayList();
     private boolean isValidTicker = false;
+    private static String selectedStock = "";
+
+    public static String getSelectedStock() {
+        return selectedStock;
+    }
 
     @FXML
     public void addToFavorites(ActionEvent event) {
@@ -63,6 +69,15 @@ public class SideDrawerController implements Initializable {
             HomeController.setInValidTickerInFavorites(false);
         }
     }
+
+
+    @FXML
+    public static void openFavorite(ActionEvent event){
+        selectedStock = ((Control)event.getSource()).getId();
+        HomeController.setLoadStockGraph();
+    }
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -93,6 +108,7 @@ public class SideDrawerController implements Initializable {
             text.setAlignment(Pos.CENTER_LEFT);
             text.setMaxWidth(163);
             text.setPrefWidth(163);
+            text.setOnAction(e ->openFavorite(e));
             //text.getStylesheets().add(bearish);
             thumbsDownIcon.setOnMouseClicked(MouseEvent -> {
                 Platform.runLater(() -> {
@@ -133,6 +149,7 @@ public class SideDrawerController implements Initializable {
 
             if (item != null && !empty) {
                 text.setText(item);
+                text.setId(item);
                 setGraphic(hbox);
                 if (SideDrawerController.isBullish(text.getText())) {
                     text.getStylesheets().clear();
