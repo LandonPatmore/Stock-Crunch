@@ -14,6 +14,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -93,17 +94,24 @@ public class SideDrawerController implements Initializable {
             //text.getStylesheets().add(bearish);
             thumbsDownIcon.setOnMouseClicked(MouseEvent -> getListView().getItems().remove(getItem()));
 
+
             openedSideDrawer.addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (newValue) {
-                        if (SideDrawerController.isBullish(text.getText())){
-                            text.getStylesheets().clear();
-                            text.getStylesheets().add(bullish);
-                        } else {
-                            text.getStylesheets().clear();
-                            text.getStylesheets().add(bearish);
-                        }
+                        Task task = new Task<Void>() {
+                            @Override public Void call() {
+                                if (SideDrawerController.isBullish(text.getText())){
+                                    text.getStylesheets().clear();
+                                    text.getStylesheets().add(bullish);
+                                } else {
+                                    text.getStylesheets().clear();
+                                    text.getStylesheets().add(bearish);
+                                }
+                                return null;
+                            }
+                        };
+                        new Thread(task).start();
                     }
                 }
             });
@@ -118,18 +126,15 @@ public class SideDrawerController implements Initializable {
             if (item != null && !empty) {
                 text.setText(item);
                 setGraphic(hbox);
+                if (SideDrawerController.isBullish(text.getText())){
+                    text.getStylesheets().clear();
+                    text.getStylesheets().add(bullish);
+                } else {
+                    text.getStylesheets().clear();
+                    text.getStylesheets().add(bearish);
+                }
             }
         }
-    }
-
-    public void expandListView(){
-        listView.setExpanded(true);
-        listView.setVerticalGap(20.0);
-    }
-
-    public void shrinkListView(){
-        listView.setExpanded(false);
-        listView.setVerticalGap(0.0);
     }
 
     private boolean validTicker(String ticker){
