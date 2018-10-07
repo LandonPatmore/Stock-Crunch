@@ -16,6 +16,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -77,6 +78,7 @@ public class HomeController implements Initializable {
 
     @FXML
     LineChart linechart;
+    private boolean articleIsOpen = false;
 
     private SideDrawerController sideDrawerController;
     private SettingsDrawerController settingsDrawerController;
@@ -251,14 +253,6 @@ public class HomeController implements Initializable {
         list.getStyleClass().add("mylistview");
         list.setMaxHeight(3400);
 
-        final Button b = new Button("Bring up article");
-        b.setOnAction(event -> {
-            final Article a = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue() + "mcd").get(0);
-            NasdaqArticleParser.getArticleData(a);
-            System.out.println(a.getBody().toString());
-            createArticleViewer(a);
-        });
-
 
         stockSearchField = new JFXTextField();
         stockSearchField.setPromptText("Search for a Stock...");
@@ -269,7 +263,6 @@ public class HomeController implements Initializable {
         stockSearchField.getStylesheets().add(searchCss);
         StackPane.setAlignment(stockSearchField, Pos.CENTER);
         searchButton = new JFXButton();
-        stocksInfoPane.getChildren().addAll(stockSearchField, b);
         scrollPaneForStockPane.setContent(stocksInfoPane);
         scrollPaneForStockPane.setPannable(true);
         stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
@@ -341,15 +334,39 @@ public class HomeController implements Initializable {
         settingsDrawerController.darkToggle.getStylesheets().clear();
     }
 
-    private void createArticleViewer(Article article){
-        final ScrollPane scrollPane = new ScrollPane();
-        final WebView browser = new WebView();
-        final WebEngine webEngine = browser.getEngine();
-        scrollPane.setContent(browser);
+    private void createArticleViewer(Article article) {
+        if (!articleIsOpen) {
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() {
+                    final ScrollPane scrollPane = new ScrollPane();
+                    final VBox container = new VBox();
+                    final WebView browser = new WebView();
+                    final WebEngine webEngine = browser.getEngine();
 
-        webEngine.loadContent(article.getBody().toString());
+                    final Button closeButton = new Button("Close");
 
-        mainSplitPane.getItems().add(scrollPane);
+                    closeButton.setOnAction(event -> {
+                        mainSplitPane.getItems().remove(container);
+                        articleIsOpen = false;
+                    });
+
+                    scrollPane.setContent(browser);
+
+                    container.getChildren().addAll(closeButton, scrollPane);
+
+                    webEngine.loadContent(article.getBody().toString());
+                    webEngine.setUserStyleSheetLocation(getClass().getResource("/" + currentTheme).toString());
+
+                    mainSplitPane.getItems().add(container);
+                    articleIsOpen = true;
+
+                    return null;
+                }
+            };
+
+            new Thread(task).run();
+        }
     }
 
     private void loadGraph(String url, int num, String timeframe, int totalNum){

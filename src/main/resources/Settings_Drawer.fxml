@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXSlider?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Label?>
@@ -7,9 +8,14 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="settingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsDrawerController">
+<AnchorPane fx:id="settingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/10.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsDrawerController">
    <children>
-      <Label layoutX="57.0" layoutY="49.0" text="Themes:" textFill="#718093">
+      <Label layoutX="319.0" layoutY="47.0" text="Intervals:" textFill="#718093">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Label layoutX="66.0" layoutY="47.0" text="Themes:" textFill="#718093">
          <font>
             <Font size="15.0" />
          </font>
@@ -26,5 +32,17 @@
       </Pane>
       <JFXToggleButton fx:id="lightToggle" layoutX="67.0" layoutY="173.0" onAction="#selectLightTheme" prefHeight="50.0" prefWidth="100.0" size="8.0" text="Light" textFill="#718093" />
       <JFXToggleButton fx:id="darkToggle" layoutX="177.0" layoutY="173.0" onAction="#selectDarkTheme" prefHeight="50.0" prefWidth="100.0" size="8.0" text="Dark" textFill="#718093" />
+      <JFXSlider blockIncrement="1.0" layoutX="319.0" layoutY="88.0" max="240.0" min="10.0" prefHeight="16.0" prefWidth="184.0" value="60.0" />
+      <Label layoutX="319.0" layoutY="73.0" text="Stock Update Interval (Seconds)" textFill="#718093">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <Label layoutX="319.0" layoutY="108.0" text="Article Update Interval (Seconds)" textFill="#718093">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </Label>
+      <JFXSlider blockIncrement="60.0" layoutX="319.0" layoutY="123.0" max="1800.0" min="1000.0" prefHeight="16.0" prefWidth="184.0" value="1500.0" />
    </children>
 </AnchorPane>

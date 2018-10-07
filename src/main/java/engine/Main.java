@@ -31,15 +31,17 @@ public class Main extends Application {
         primaryStage.show();
 
         //demo of sentiment analysis
-        /*ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.MARKET_WATCH,
-                RSSFeedProvider.MARKET_WATCH_FEED, MarketWatchRSSFeed.BREAKING_NEWS_BULELTINS.getValue());
-        for(Article a : articles){
-            MarketWatchArticleParser.getArticleData(a);
-            SentimentAnalyzer.getSentimentScore(a);
-            if(a.getBody() != null) {
-                System.out.println(a.getBody().text());
-                System.out.println(a.getSentiment());
-            }
-        }*/
+//        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.MARKET_WATCH,
+//                RSSFeedProvider.MARKET_WATCH_FEED, MarketWatchRSSFeed.BREAKING_NEWS_BULELTINS.getValue());
+//        for(Article a : articles){
+//            MarketWatchArticleParser.getArticleData(a);
+//            SentimentAnalyzer.getSentimentScore(a);
+//            if(a.getBody() != null) {
+//                System.out.println(a.getBody().text());
+//                System.out.println(a.getSentiment());
+//            }
+//        }
+
+        //DashboardLogin.setStage(primaryStage);
     }
 }
