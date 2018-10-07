@@ -2,6 +2,11 @@ package controllers;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
+import dataobjects.Article;
+import dataobjects.NasdaqArticleRSSFeed;
+import dataobjects.RSSFeedProvider;
+import dataworkers.DataFetcher;
+import dataworkers.RSSFeedFetcher;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -11,15 +16,20 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import model.Settings;
+import parsers.NasdaqArticleParser;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -216,6 +226,14 @@ public class HomeController implements Initializable {
         list.getStyleClass().add("mylistview");
         list.setMaxHeight(3400);
 
+        final Button b = new Button("Bring up article");
+        b.setOnAction(event -> {
+            final Article a = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue() + "mcd").get(0);
+            NasdaqArticleParser.getArticleData(a);
+            System.out.println(a.getBody().toString());
+            createArticleViewer(a);
+        });
+
 
         stockSearchField = new JFXTextField();
         stockSearchField.setPromptText("Search for a Stock...");
@@ -226,7 +244,7 @@ public class HomeController implements Initializable {
         stockSearchField.getStylesheets().add(searchCss);
         StackPane.setAlignment(stockSearchField, Pos.CENTER);
         searchButton = new JFXButton();
-        stocksInfoPane.getChildren().addAll(stockSearchField);
+        stocksInfoPane.getChildren().addAll(stockSearchField, b);
         scrollPaneForStockPane.setContent(stocksInfoPane);
         scrollPaneForStockPane.setPannable(true);
         stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
@@ -244,7 +262,7 @@ public class HomeController implements Initializable {
 
     }
 
-    private void addStyleSheets(){
+    private void addStyleSheets() {
         anchorPane.getStylesheets().add(css);
         mainSplitPane.getStylesheets().add(css);
         topBarGridPane.getStylesheets().add(css);
@@ -274,5 +292,16 @@ public class HomeController implements Initializable {
         settingsDrawerController.settingsPane.getStylesheets().clear();
         settingsDrawerController.lightToggle.getStylesheets().clear();
         settingsDrawerController.darkToggle.getStylesheets().clear();
+    }
+
+    private void createArticleViewer(Article article){
+        final ScrollPane scrollPane = new ScrollPane();
+        final WebView browser = new WebView();
+        final WebEngine webEngine = browser.getEngine();
+        scrollPane.setContent(browser);
+
+        webEngine.loadContent(article.getBody().toString());
+
+        mainSplitPane.getItems().add(scrollPane);
     }
 }
