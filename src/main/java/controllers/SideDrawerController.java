@@ -120,6 +120,7 @@ public class SideDrawerController implements Initializable {
                 return false;
             }
         }catch (Exception e){
+            System.out.println("Something went wrong int isBullish!!!  " + e.getLocalizedMessage());
             return false;
         }
         return true;
