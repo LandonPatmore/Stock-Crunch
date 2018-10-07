@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXToggleButton?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
 
-<AnchorPane fx:id="settingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsDrawerController" />
+<AnchorPane fx:id="settingsPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsDrawerController">
+   <children>
+      <Label layoutX="57.0" layoutY="49.0" text="Themes:" textFill="#718093">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Label>
+      <Pane layoutX="66.0" layoutY="73.0" onMouseClicked="#selectLightThemeFromPane" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #dcdde1; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5;">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Pane>
+      <Pane layoutX="177.0" layoutY="73.0" onMouseClicked="#selectDarkThemeFromPane" prefHeight="100.0" prefWidth="100.0" style="-fx-background-color: #353b48; -fx-border-color: #b2bec3; -fx-background-radius: 5; -fx-border-radius: 5;">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Pane>
+      <JFXToggleButton fx:id="lightToggle" layoutX="67.0" layoutY="173.0" onAction="#selectLightTheme" prefHeight="50.0" prefWidth="100.0" size="8.0" text="Light" textFill="#718093" />
+      <JFXToggleButton fx:id="darkToggle" layoutX="177.0" layoutY="173.0" onAction="#selectDarkTheme" prefHeight="50.0" prefWidth="100.0" size="8.0" text="Dark" textFill="#718093" />
+   </children>
+</AnchorPane>
