@@ -87,4 +87,12 @@ public class Article {
     public void setSentiment(ArticleSentiment sentiment) { this.sentiment = sentiment;}
 
     public String getSentiment() { return sentiment.getSentiment(); }
+
+    public String getDateForChange(){
+        if(dateTime.getDayOfMonth() < 10)
+            return dateTime.getYear() + "-" + dateTime.getMonthOfYear() + "-0" + dateTime.getDayOfMonth();
+        else
+            return dateTime.getYear() + "-" + dateTime.getMonthOfYear() + "-" + dateTime.getDayOfMonth();
+    }
+
 }

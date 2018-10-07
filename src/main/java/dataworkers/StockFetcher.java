@@ -84,7 +84,7 @@ public class StockFetcher {
 
     public static String changeSince(String thenDate, String ticker) {
 
-        JSONArray ary = StockFetcher.stockDataHistorical("tsla", 1, "m");
+        JSONArray ary = StockFetcher.stockDataHistorical(ticker, 1, "m");
 
         double change = 0.0;
 
