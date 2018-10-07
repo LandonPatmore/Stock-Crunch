@@ -99,6 +99,7 @@ public class HomeController implements Initializable {
     private static BooleanProperty inValidTickerInFavorites = new SimpleBooleanProperty(false);
     private static BooleanProperty loadStockGraph = new SimpleBooleanProperty(false);
     private LineChart linechart;
+    private VBox stockPaneVBox;
 
 
     public static void setSetThemDarkTrue(){
@@ -268,9 +269,12 @@ public class HomeController implements Initializable {
         stockSearchField.setMaxSize(300,20);
         String searchCss = this.getClass().getClassLoader().getResource("stock-search-style.css").toExternalForm();
         stockSearchField.getStylesheets().add(searchCss);
-        StackPane.setAlignment(stockSearchField, Pos.CENTER);
+        stockPaneVBox = new VBox();
+        stockPaneVBox.setAlignment(Pos.CENTER);
+        StackPane.setAlignment(stockPaneVBox, Pos.CENTER);
+        stockPaneVBox.getChildren().add(stockSearchField);
         //searchButton = new JFXButton();
-        stocksInfoPane.getChildren().addAll(stockSearchField);
+        stocksInfoPane.getChildren().addAll(stockPaneVBox);
         scrollPaneForStockPane.setContent(stocksInfoPane);
         scrollPaneForStockPane.setPannable(true);
         stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
@@ -319,6 +323,7 @@ public class HomeController implements Initializable {
                             NumberAxis yAxis = new NumberAxis();
                             yAxis.setForceZeroInRange(false);
                             linechart = new LineChart(xAxis, yAxis);
+                            linechart.setCreateSymbols(false);
                             stocksInfoPane.getChildren().addAll(linechart);
                         }
                         else {
@@ -330,6 +335,7 @@ public class HomeController implements Initializable {
                         linechart.getStylesheets().add(graph);
                         loadGraph(selectedStock,1,"d",100);
                         //if(!stocksInfoPane.getChildren().contains(linechart));
+                        stockPaneVBox.getChildren().add(linechart);
                         loadStockGraph.setValue(false);
                     }
                 }
