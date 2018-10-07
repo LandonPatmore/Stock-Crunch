@@ -25,6 +25,6 @@
          </cursor>
       </Pane>
       <JFXToggleButton fx:id="lightToggle" layoutX="67.0" layoutY="173.0" onAction="#selectLightTheme" prefHeight="50.0" prefWidth="100.0" size="8.0" text="Light" textFill="#718093" />
-      <JFXToggleButton fx:id="darkToggle" layoutX="177.0" layoutY="173.0" onAction="#selectDarkTheme" prefHeight="50.0" prefWidth="100.0" selected="true" size="8.0" text="Dark" textFill="#718093" />
+      <JFXToggleButton fx:id="darkToggle" layoutX="177.0" layoutY="173.0" onAction="#selectDarkTheme" prefHeight="50.0" prefWidth="100.0" size="8.0" text="Dark" textFill="#718093" />
    </children>
 </AnchorPane>
