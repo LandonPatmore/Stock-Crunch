@@ -1,5 +1,6 @@
 package dataworkers;
 
+import dataobjects.Article;
 import dataobjects.ArticleInterface;
 import dataobjects.FeedProvider;
 import org.joda.time.DateTime;
@@ -22,7 +23,8 @@ public class ArticleListFetcher {
             DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss Z").getParser()};
     private static final DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(null, parsers).toFormatter();
 
-    public static ArrayList<String> grabArticles(FeedProvider provider, ArticleInterface typeOfFeed) {
+    public static ArrayList<Article> grabArticles(FeedProvider provider, ArticleInterface typeOfFeed) {
+        final ArrayList<Article> articleList = new ArrayList<>();
         final Document xml = DataFetcher.xmlGrabber(provider.getValue() + typeOfFeed.getValue());
 
         try {
@@ -35,11 +37,11 @@ public class ArticleListFetcher {
                     final DateTime pubDate = formatter.parseDateTime(e.select("pubDate").first().text());
                     System.out.println(e.select("description").first().text());
 
-//                    System.out.println(new Article(title, link, pubDate));
+                    articleList.add(new Article(title, link, pubDate));
                 }
             }
 
-            return null;
+            return articleList;
         } catch (MalformedURLException e) {
             System.out.println(e.getLocalizedMessage());
             return null;
