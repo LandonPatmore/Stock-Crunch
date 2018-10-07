@@ -4,11 +4,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.parser.Parser;
-import org.jsoup.select.Elements;
+import sun.java2d.jules.JulesPathBuf;
 
-import java.util.ArrayList;
+import java.text.DecimalFormat;
 
 public class StockFetcher {
 
@@ -41,18 +39,18 @@ public class StockFetcher {
         return stocks;
     }*/
 
-    public static JSONArray stockDataHistorical(String url, int number, String timeframe){
+    public static JSONArray stockDataHistorical(String url, int number, String timeframe) {
         JSONArray data;
         String realURL = "https://api.iextrading.com/1.0/stock/" + url;
-        switch(timeframe){
+        switch (timeframe) {
+            case "d":
+                realURL += "/chart/" + number + "d";
+                break;
             case "m":
-                realURL+="/chart/"+number+"m";
+                realURL += "/chart/" + number + "m";
                 break;
             case "y":
-                realURL+="/chart/"+number+"y";
-                break;
-             case "d":
-                realURL+="/chart/"+number+"d";
+                realURL += "/chart/" + number + "y";
                 break;
         }
         try {
@@ -60,7 +58,7 @@ public class StockFetcher {
             Document test = Jsoup.connect(realURL).ignoreContentType(true).get();
 
             data = new JSONArray(test.text());
-        }catch (Exception e){
+        } catch (Exception e) {
             //System.out.println(e.getLocalizedMessage());
             e.printStackTrace();
             return null;
@@ -69,26 +67,85 @@ public class StockFetcher {
     }
 
 
-    public static JSONObject stockDataCurrent(String url){
+    public static JSONObject stockDataCurrent(String ticker) {
         JSONObject data;
-        try{
-            Document rawData = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/quote").ignoreContentType(true).get();
+        try {
+            Document rawData = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker +
+                    "/quote").ignoreContentType(true).get();
 
             data = new JSONObject(rawData.text());
 
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
             return null;
         }
         return data;
     }
 
+    public static String changeSince(String thenDate, String ticker) {
 
-    public static void main(String[]args){
-        JSONArray name = StockFetcher.stockDataHistorical("aapl", 5, "y");
-        System.out.println("test");
+        JSONArray ary = StockFetcher.stockDataHistorical("tsla", 1, "m");
+
+        double change = 0.0;
+
+        try {
+            double[] prices = getPricesFromDate(ary, thenDate, ticker);
+            double thenPrice = prices[0];
+            double nowPrice = prices[1];
+
+            if (thenPrice < Double.MAX_VALUE && nowPrice < Double.MAX_VALUE) {
+                DecimalFormat df = new DecimalFormat("0.##");
+                return df.format(calculateChange(thenPrice, nowPrice));
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public static double[] getPricesFromDate(JSONArray obj, String date, String ticker) {
+
+        double[] prices = new double[2];
+        String d;
+        boolean found = false;
+        JSONObject cur;
+
+        for (int i = 0; i < obj.length(); i++) {
+            cur = obj.getJSONObject(i);
+            d = cur.getString("date");
+
+            if (found) {
+                prices[1] = cur.getDouble("vwap");
+                break;
+            }
+
+            if (!d.equals("")) {
+                prices[0] = cur.getDouble("vwap");
+                found = true;
+            }
+        }
+
+        if (!found)
+            prices[0] = prices[1] = Double.MAX_VALUE;
+
+        return prices;
+    }
+
+    private static double calculateChange(double then, double now) {
+
+        if (now == 0.0)
+            return (-then * 100);
+
+        return (then - now) / now * 100;
+
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(changeSince("2018-09-07", "tsla"));
 
         JSONObject test = StockFetcher.stockDataCurrent("aapl");
         System.out.println("test");
     }
+
 }

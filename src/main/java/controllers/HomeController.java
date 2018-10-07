@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
@@ -26,11 +27,15 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.text.Text;
 import model.Settings;
+import org.json.JSONObject;
+import parsers.NasdaqArticleParser;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
@@ -72,6 +77,16 @@ public class HomeController implements Initializable {
     @FXML
     ColumnConstraints gridPaneRight;
 
+
+    Label current = new Label();
+    Label open = new Label();
+    Label close = new Label();
+    Label volume = new Label();
+    Label high = new Label();
+    Label low = new Label();
+    Label change = new Label();
+    HBox stats = new HBox();
+    HBox headers = new HBox();
 
     private boolean articleIsOpen = false;
     private SideDrawerController sideDrawerController;
@@ -264,6 +279,38 @@ public class HomeController implements Initializable {
         sideDrawer.prefHeightProperty().bind(anchorPane.heightProperty());
         settingsDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
 
+        Label temp = new Label();
+        temp.setText("OPEN");
+        temp.setTextFill(Paint.valueOf("white"));
+        headers.getChildren().add(temp);
+        temp = new Label();
+        temp.setText("CLOSE");
+        temp.setTextFill(Paint.valueOf("white"));
+        headers.getChildren().add(temp);
+        temp = new Label();
+        temp.setText("VOLUME");
+        temp.setTextFill(Paint.valueOf("white"));
+        headers.getChildren().add(temp);
+        temp = new Label();
+        temp.setText("CURRENT");
+        temp.setTextFill(Paint.valueOf("white"));
+        headers.getChildren().add(temp);
+        temp = new Label();
+        temp.setText("CHANGE");
+        temp.setTextFill(Paint.valueOf("white"));
+        headers.getChildren().add(temp);
+        temp = new Label();
+        temp.setText("LOW");
+        temp.setTextFill(Paint.valueOf("white"));
+        headers.getChildren().add(temp);
+        temp = new Label();
+        temp.setText("HIGH");
+        temp.setTextFill(Paint.valueOf("white"));
+        headers.getChildren().add(temp);
+
+        headers.setSpacing(10);
+        headers.setAlignment(Pos.CENTER);
+
         sideDrawer.setVisible(false);
         settingsDrawer.setVisible(false);
         //Allows you to click through the drawer if it's not visible (so we set it invisible when it's not open)
@@ -391,6 +438,9 @@ public class HomeController implements Initializable {
                             linechart.setLegendVisible(false);
                             stockPaneVBox.getChildren().addAll(linechart);
                             stockPaneVBox.setVgrow(linechart,Priority.ALWAYS);
+                            linechart.setLegendVisible(false);
+                            stocksInfoPane.getChildren().addAll(linechart);
+                            stockPaneVBox.getChildren().add(linechart);
                         }
                         else {
                             linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
@@ -400,6 +450,26 @@ public class HomeController implements Initializable {
                         linechart.getStylesheets().add(graph);
                         loadGraph(selectedStock,1,"d",100);
                         //if(!stocksInfoPane.getChildren().contains(linechart));
+                        if(!stockPaneVBox.getChildren().contains(headers)){
+                            stockPaneVBox.getChildren().add(headers);
+                        }
+
+                        if(!stockPaneVBox.getChildren().contains(stats)){
+                            stockPaneVBox.getChildren().add(stats);
+                            loadData(selectedStock);
+                            stats.setSpacing(15);
+                            stats.setAlignment(Pos.CENTER);
+                            stats.getChildren().add(open);
+                            stats.getChildren().add(close);
+                            stats.getChildren().add(volume);
+                            stats.getChildren().add(current);
+                            stats.getChildren().add(change);
+                            stats.getChildren().add(low);
+                            stats.getChildren().add(high);
+                        }
+                        else{
+                            loadData(selectedStock);
+                        }
                         loadStockGraph.setValue(false);
                     }
                 }
@@ -477,5 +547,23 @@ public class HomeController implements Initializable {
     private void loadGraph(String url, int num, String timeframe, int totalNum){
         linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, num, timeframe), totalNum));
         linechart.setVisible(true);
+    }
+
+    private void loadData(String url){
+        JSONObject object = StockFetcher.stockDataCurrent(url);
+        open.setText(object.get("open").toString());
+        open.setTextFill(Paint.valueOf("white"));
+        change.setText(object.get("change").toString());
+        change.setTextFill(Paint.valueOf("white"));
+        current.setText(object.get("latestPrice").toString());
+        current.setTextFill(Paint.valueOf("white"));
+        low.setText(object.get("low").toString());
+        low.setTextFill(Paint.valueOf("white"));
+        high.setText(object.get("high").toString());
+        high.setTextFill(Paint.valueOf("white"));
+        close.setText(object.get("close").toString());
+        close.setTextFill(Paint.valueOf("white"));
+        volume.setText(object.get("latestVolume").toString());
+        volume.setTextFill(Paint.valueOf("white"));
     }
 }
