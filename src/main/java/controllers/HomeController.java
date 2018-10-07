@@ -7,6 +7,7 @@ import dataobjects.NasdaqArticleRSSFeed;
 import dataobjects.RSSFeedProvider;
 import dataworkers.DataFetcher;
 import dataworkers.RSSFeedFetcher;
+import dataworkers.StockFetcher;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,6 +17,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -67,6 +70,9 @@ public class HomeController implements Initializable {
 
     @FXML
     ColumnConstraints gridPaneRight;
+
+    @FXML
+    LineChart linechart;
 
     private SideDrawerController sideDrawerController;
     private SettingsDrawerController settingsDrawerController;
@@ -260,6 +266,9 @@ public class HomeController implements Initializable {
             setThemeLight.setValue(true);
         }
 
+        ((NumberAxis) linechart.getYAxis()).setForceZeroInRange(false);
+        linechart.setVisible(false);
+
     }
 
     private void addStyleSheets() {
@@ -303,5 +312,10 @@ public class HomeController implements Initializable {
         webEngine.loadContent(article.getBody().toString());
 
         mainSplitPane.getItems().add(scrollPane);
+    }
+
+    private void loadGraph(String url, int num, String timeframe, int totalNum){
+        linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, num, timeframe), totalNum));
+        linechart.setVisible(true);
     }
 }
