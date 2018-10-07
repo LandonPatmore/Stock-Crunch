@@ -21,10 +21,10 @@ public class GraphController {
         }
         for(int i = 0; i < totalNum; i+=spacer){
             if(i  == totalNum -1){
-                series.getData().add(new XYChart.Data(((JSONObject)array.get(i)).get("date"), Double.parseDouble(((JSONObject)array.get(i)).get(average).toString());
+                series.getData().add(new XYChart.Data(((JSONObject)array.get(i)).get("date").toString(), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
             }
             else{
-                series.getData().add(new XYChart.Data(((JSONObject)array.get(i)).get("date"), Double.parseDouble(((JSONObject)array.get(i)).get(average).toString());
+                series.getData().add(new XYChart.Data(((JSONObject)array.get(i)).get("date").toString(), Double.valueOf(((JSONObject)array.get(i)).get(average).toString())));
             }
         }
         return series;
