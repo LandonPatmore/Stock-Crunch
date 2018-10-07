@@ -28,16 +28,6 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
         primaryStage.show();
-        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED,
-                NasdaqArticleRSSFeed.SYMBOL.getValue() + "mcd");
-
-        for(Article article : articles){
-            if(NasdaqArticleParser.getArticleData(article)) {
-                System.out.println(article.getBody());
-
-                System.out.println("\n\n");
-            }
-        }
 
         //DashboardLogin.setStage(primaryStage);
     }
