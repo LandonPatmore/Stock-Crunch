@@ -1,16 +1,14 @@
 package engine;
 
 import dataobjects.Article;
+import dataobjects.MarketWatchRSSFeed;
 import dataobjects.RSSFeedProvider;
-import dataobjects.NasdaqArticleRSSFeed;
 import dataworkers.RSSFeedFetcher;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import model.Settings;
-import parsers.NasdaqArticleParser;
 
 import java.io.IOException;
 import java.util.ArrayList;

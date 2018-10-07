@@ -21,6 +21,7 @@ public class Article {
     private Elements body;
     private String copyright;
     // TODO: Sentiment analysis object added later
+    private ArticleSentiment sentiment;
 
     // TODO: Get images from article as well
     public Article(String title, String link, DateTime dateTime, RSSFeedProvider providerName) {
@@ -73,4 +74,8 @@ public class Article {
     public RSSFeedProvider getProviderName() {
         return providerName;
     }
+
+    public void setSentiment(ArticleSentiment sentiment) { this.sentiment = sentiment;}
+
+    public String getSentiment() { return sentiment.getSentiment(); }
 }
