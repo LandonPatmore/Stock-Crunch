@@ -4,10 +4,13 @@ import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
 import dataobjects.Article;
 import dataobjects.ArticleSentiment;
+import dataobjects.NasdaqArticleRSSFeed;
 import dataobjects.RSSFeedProvider;
 import dataworkers.RSSFeedFetcher;
 import dataworkers.SentimentAnalyzer;
 import dataworkers.StockFetcher;
+import engine.Main;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -25,10 +28,10 @@ import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
@@ -46,6 +49,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -93,7 +97,7 @@ public class HomeController implements Initializable {
     Label change = new Label();
     HBox stats = new HBox();
     HBox headers = new HBox();
-    HBox links = new HBox();
+    VBox links = new VBox();
 
     private boolean articleIsOpen = false;
     private SideDrawerController sideDrawerController;
@@ -119,6 +123,12 @@ public class HomeController implements Initializable {
     private Label ticker;
     private static boolean isBullish;
     private static boolean isDarkMode;
+
+    static HostServices hs;
+
+    public static void setEs(HostServices es){
+        hs = es;
+    }
 
 
     public static void setSetThemDarkTrue(){
@@ -429,7 +439,8 @@ public class HomeController implements Initializable {
                             stocksInfoPane.getChildren().addAll(linechart);
                             stockPaneVBox.getChildren().add(linechart);
                             load(selectedStock);
-                            stockPaneVBox.getChildren().add(links);
+                            links.setAlignment(Pos.CENTER);
+
                         }
                         else {
                             linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
@@ -451,6 +462,7 @@ public class HomeController implements Initializable {
                             stats.getChildren().add(open);
 
                             stockPaneVBox.getChildren().add(stats);
+                            stockPaneVBox.getChildren().add(links);
                             /*stats.getChildren().add(close);
                             stats.getChildren().add(volume);
                             stats.getChildren().add(current);
@@ -548,16 +560,23 @@ public class HomeController implements Initializable {
         open.setTextFill(Paint.valueOf("white"));
     }
 
+
     private void load(String url){
         links.getChildren().clear();
-        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.MARKET_WATCH, RSSFeedProvider.MARKET_WATCH_FEED, url);
-        Label temp;
+        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue()+url);
+        Hyperlink temp;
         //links.getChildren().add(temp);
         for(int i = 0; i < 5; i++){
             MarketWatchArticleParser.getArticleData(articles.get(i));
             SentimentAnalyzer.getSentimentScore(articles.get(i));
-
-            temp = new Label(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
+            final Article current = articles.get(i);
+            temp = new Hyperlink(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
+            temp.setOnAction((ActionEvent event) -> {
+                Hyperlink h = (Hyperlink) event.getTarget();
+                String s = current.getLink();
+                hs.showDocument(s);
+                event.consume();
+            });
             if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
                 temp.setTextFill(Paint.valueOf("green"));
             }
