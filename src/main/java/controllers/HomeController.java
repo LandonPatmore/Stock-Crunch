@@ -4,7 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIconView;
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -34,10 +34,13 @@ public class HomeController implements Initializable {
     SplitPane mainSplitPane;
 
     @FXML
-    JFXButton filtersButton;
+    JFXButton settingsButton;
 
     @FXML
     GridPane topBarGridPane;
+
+    @FXML
+    JFXDrawer settingsDrawer;
 
     @FXML
     JFXDrawer sideDrawer;
@@ -52,6 +55,7 @@ public class HomeController implements Initializable {
     ColumnConstraints gridPaneRight;
 
     private SideDrawerController sideDrawerController;
+    private SettingsDrawerController settingsDrawerController;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -65,30 +69,49 @@ public class HomeController implements Initializable {
         } catch (IOException ex) {
             Logger.getLogger(SideDrawerController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //Load settings top drawer
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Settings_Drawer.fxml"));
+            AnchorPane ap = loader.load();
+            settingsDrawerController = loader.getController();
+            settingsDrawerController.settingsPane.maxWidthProperty().bind(anchorPane.widthProperty());
+            settingsDrawer.setSidePane(ap);
+        } catch (IOException ex) {
+            Logger.getLogger(SettingsDrawerController.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        String css = this.getClass().getClassLoader().getResource("bullish-light.css").toExternalForm();
+        //Add css sylesheet to stuff
+        String css = this.getClass().getClassLoader().getResource("bearish-dark.css").toExternalForm();
         anchorPane.getStylesheets().add(css);
         mainSplitPane.getStylesheets().add(css);
         topBarGridPane.getStylesheets().add(css);
         sideDrawerController.dashboardDrawerVBox.getStylesheets().add(css);
         sideDrawerController.listView.getStylesheets().add(css);
+        settingsDrawerController.settingsPane.getStylesheets().add(css);
 
+        //add id to stylesheet
         anchorPane.setId("anchorpane");
         mainSplitPane.setId("split");
         topBarGridPane.setId("topBar");
         sideDrawerController.dashboardDrawerVBox.setId("sidedrawervbox");
         sideDrawerController.listView.setId("sidedrawerlistview");
+        settingsDrawerController.settingsPane.setId("settingsdrawerpane");
 
+        //Make stuff resize right
         topBarGridPane.prefWidthProperty().bind(anchorPane.widthProperty());
         mainSplitPane.prefWidthProperty().bind(anchorPane.widthProperty());
         mainSplitPane.prefHeightProperty().bind(anchorPane.heightProperty());
         gridPaneLeft.maxWidthProperty().bind(topBarGridPane.widthProperty());
         gridPaneRight.maxWidthProperty().bind(topBarGridPane.widthProperty());
         sideDrawer.prefHeightProperty().bind(anchorPane.heightProperty());
+        settingsDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
 
         sideDrawer.setVisible(false);
+        settingsDrawer.setVisible(false);
         //Allows you to click through the drawer if it's not visible (so we set it invisible when it's not open)
         sideDrawer.setPickOnBounds(false);
+        settingsDrawer.setPickOnBounds(false);
+
 
         HamburgerBasicCloseTransition basicCloseTransition = new HamburgerBasicCloseTransition(hamburger);
         basicCloseTransition.setRate(-1);
@@ -113,6 +136,22 @@ public class HomeController implements Initializable {
                 sideDrawer.setVisible(true);
                 sideDrawer.open();
                 //sideDrawerController.expandListView();
+            }
+        });
+
+        settingsButton.addEventHandler(MouseEvent.MOUSE_PRESSED, (e) -> {
+            if (settingsDrawer.isOpened()) {
+                settingsDrawer.close();
+                final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+                executor.schedule(new Runnable() {
+                    @Override
+                    public void run() {
+                        settingsDrawer.setVisible(false);
+                    }
+                }, 500, TimeUnit.MILLISECONDS);
+            } else {
+                settingsDrawer.setVisible(true);
+                settingsDrawer.open();
             }
         });
     }

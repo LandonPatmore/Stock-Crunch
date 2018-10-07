@@ -33,7 +33,7 @@
 
 
 .jfx-hamburger StackPane{
-    -fx-background-color: #218c74;
+    -fx-background-color: #c0392b;
 }
 
 .list-view .list-cell:hover {
@@ -49,7 +49,7 @@
 }
 
 .jfx-rippler {
-    -jfx-rippler-fill: #55efc4;
+    -jfx-rippler-fill: #c0392b;
 }
 
 .jfx-progress-bar > .track, .jfx-progress-bar > .bar {
@@ -70,5 +70,5 @@
 }
 
 .jfx-button {
-    -fx-text-fill: #218c74;
+    -fx-text-fill: #c0392b;
 }
