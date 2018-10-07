@@ -568,9 +568,8 @@ public class HomeController implements Initializable {
             protected Void call() {
                 ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue() + ticker);
                 for (int i = 0; i < (articles.size() > 5 ? 5 : articles.size()); i++) {
-                    System.out.println("CURRENT: " + articles.get(i).getTitle());
                     NasdaqArticleParser.getArticleData(articles.get(i));
-//                    SentimentAnalyzer.getSentimentScore(articles.get(i));
+                    SentimentAnalyzer.getSentimentScore(articles.get(i));
                 }
                 Platform.runLater(() -> loadArticleData(articles));
                 return null;

@@ -36,6 +36,6 @@ jfx {
     mainClass = '***EDIT THIS***'
 
     // minimal requirement for jfxNative-task
-    vendor = 'Stock Crunch'
+    vendor = 'Stock Church'
 }
 
