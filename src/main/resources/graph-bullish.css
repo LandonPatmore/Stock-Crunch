@@ -48,7 +48,7 @@
     -fx-border-color: transparent black transparent transparent;
 }
 .axis Text{
-    -fx-fill: white;
+    -fx-fill: rgba(0,0,0,0.8);
 }
 .tick-mark {
     -fx-font-size: 10px;
@@ -62,16 +62,16 @@
 .chart-legend {
     -fx-background-color:  transparent;
     -fx-padding: 20px;
-    -fx-fill: white;
+    -fx-fill: #4682b4;
 }
 
 .chart-legend-item-symbol{
     -fx-background-radius: 0;
-    -fx-fill: white;
+    -fx-fill: #4682b4;
 }
 
 .chart-legend-item{
-    -fx-text-fill: white;
+    -fx-text-fill: #4682b4;
 }
 
 .chart-plot-background {
