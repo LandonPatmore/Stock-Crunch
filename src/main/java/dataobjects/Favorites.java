@@ -22,7 +22,6 @@ public class Favorites {
 
     private static boolean createFavoritesFile() {
         try {
-            serializeData(null);
             return file.createNewFile();
         } catch (Exception e) {
             System.out.println(e.getLocalizedMessage());
