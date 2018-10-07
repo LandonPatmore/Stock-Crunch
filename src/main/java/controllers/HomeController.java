@@ -8,6 +8,7 @@ import dataobjects.RSSFeedProvider;
 import dataworkers.DataFetcher;
 import dataworkers.RSSFeedFetcher;
 import dataworkers.StockFetcher;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -201,6 +202,11 @@ public class HomeController implements Initializable {
                 //sideDrawerController.shrinkListView();
                 sideDrawer.close();
                 hamburger.setDisable(true);
+                Platform.runLater(new Runnable() {
+                    @Override public void run() {
+                        SideDrawerController.deletableCell.setOpenedSideDrawer(false);
+                    }
+                });
                 //This starts a Thread but immediately schedules it to run after 500 milliseconds, so the drawer closing animation can run before making the drawer invisible
                 //Thanks for writing this Doug Lea
                 final ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
@@ -214,6 +220,11 @@ public class HomeController implements Initializable {
             } else {
                 sideDrawer.setVisible(true);
                 sideDrawer.open();
+                Platform.runLater(new Runnable() {
+                    @Override public void run() {
+                        SideDrawerController.deletableCell.setOpenedSideDrawer(true);
+                    }
+                });
                 //sideDrawerController.expandListView();
             }
         });
