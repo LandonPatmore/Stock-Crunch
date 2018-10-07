@@ -280,36 +280,13 @@ public class HomeController implements Initializable {
         settingsDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
 
         Label temp = new Label();
-        temp.setText("OPEN");
+        temp.setText("OPEN\t \tCLOSE\t \tVOLUME\t \tCURRENT\t \tCHANGE\t \tLOW\t \tHIGH");
         temp.setTextFill(Paint.valueOf("white"));
-        headers.getChildren().add(temp);
-        temp = new Label();
-        temp.setText("CLOSE");
-        temp.setTextFill(Paint.valueOf("white"));
-        headers.getChildren().add(temp);
-        temp = new Label();
-        temp.setText("VOLUME");
-        temp.setTextFill(Paint.valueOf("white"));
-        headers.getChildren().add(temp);
-        temp = new Label();
-        temp.setText("CURRENT");
-        temp.setTextFill(Paint.valueOf("white"));
-        headers.getChildren().add(temp);
-        temp = new Label();
-        temp.setText("CHANGE");
-        temp.setTextFill(Paint.valueOf("white"));
-        headers.getChildren().add(temp);
-        temp = new Label();
-        temp.setText("LOW");
-        temp.setTextFill(Paint.valueOf("white"));
-        headers.getChildren().add(temp);
-        temp = new Label();
-        temp.setText("HIGH");
-        temp.setTextFill(Paint.valueOf("white"));
-        headers.getChildren().add(temp);
 
         headers.setSpacing(10);
         headers.setAlignment(Pos.CENTER);
+
+        headers.getChildren().add(temp);
 
         sideDrawer.setVisible(false);
         settingsDrawer.setVisible(false);
@@ -457,17 +434,20 @@ public class HomeController implements Initializable {
                         }
 
                         if(!stockPaneVBox.getChildren().contains(stats)){
-                            stockPaneVBox.getChildren().add(stats);
                             loadData(selectedStock);
                             stats.setSpacing(15);
                             stats.setAlignment(Pos.CENTER);
+
+
                             stats.getChildren().add(open);
-                            stats.getChildren().add(close);
+
+                            stockPaneVBox.getChildren().add(stats);
+                            /*stats.getChildren().add(close);
                             stats.getChildren().add(volume);
                             stats.getChildren().add(current);
                             stats.getChildren().add(change);
                             stats.getChildren().add(low);
-                            stats.getChildren().add(high);
+                            stats.getChildren().add(high);*/
                         }
                         else{
                             loadData(selectedStock);
@@ -553,7 +533,7 @@ public class HomeController implements Initializable {
 
     private void loadData(String url){
         JSONObject object = StockFetcher.stockDataCurrent(url);
-        open.setText(object.get("open").toString());
+        /*open.setText(object.get("open").toString());
         open.setTextFill(Paint.valueOf("white"));
         change.setText(object.get("change").toString());
         change.setTextFill(Paint.valueOf("white"));
@@ -566,6 +546,10 @@ public class HomeController implements Initializable {
         close.setText(object.get("close").toString());
         close.setTextFill(Paint.valueOf("white"));
         volume.setText(object.get("latestVolume").toString());
-        volume.setTextFill(Paint.valueOf("white"));
+        volume.setTextFill(Paint.valueOf("white"));*/
+
+
+        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() +"\t \t" + object.get("high").toString());
+        open.setTextFill(Paint.valueOf("white"));
     }
 }
