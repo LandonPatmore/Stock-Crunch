@@ -77,9 +77,6 @@ public class StockFetcher {
             System.out.println(e.getLocalizedMessage());
             return null;
         }
-
-
-
         return data;
     }
 
