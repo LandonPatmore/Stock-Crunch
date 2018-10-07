@@ -4,6 +4,7 @@ import dataobjects.Article;
 import dataobjects.FeedProvider;
 import dataobjects.MarketWatch;
 import dataworkers.ArticleListFetcher;
+import dataworkers.MarketWatchArticleParser;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
