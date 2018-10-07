@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXListView?>
+<?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox fx:id="dashboardDrawerVBox" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SideDrawerController">
+<VBox fx:id="dashboardDrawerVBox" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="600.0" prefWidth="200.0" style="-fx-spacing: 5;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SideDrawerController">
    <children>
-      <Pane fx:id="spacerPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="200.0" />
-      <JFXListView fx:id="listView" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="599.0" prefWidth="195.0" showTooltip="true" VBox.vgrow="ALWAYS" />
+      <Pane fx:id="spacerPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="45.0" prefWidth="200.0" />
+      <JFXTextField fx:id="stockSearchFieldForFavs" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onAction="#addToFavorites" prefHeight="35.0" prefWidth="185.0" promptText="Add a ticker to favorites..." stylesheets="@stock-search-style.css">
+         <font>
+            <Font size="12.0" />
+         </font>
+      </JFXTextField>
+      <JFXListView fx:id="listView" editable="true" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="599.0" prefWidth="195.0" showTooltip="true" VBox.vgrow="ALWAYS" />
    </children>
 </VBox>
