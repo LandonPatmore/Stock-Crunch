@@ -2,8 +2,12 @@ package controllers;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.transitions.hamburger.HamburgerBasicCloseTransition;
-import dataobjects.Article;
+import dataobjects.*;
+import dataworkers.RSSFeedFetcher;
+import dataworkers.SentimentAnalyzer;
 import dataworkers.StockFetcher;
+import engine.Main;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
@@ -21,10 +25,10 @@ import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Paint;
@@ -33,13 +37,16 @@ import javafx.scene.web.WebView;
 import javafx.scene.text.Text;
 import model.Settings;
 import org.json.JSONObject;
+import parsers.MarketWatchArticleParser;
 import parsers.NasdaqArticleParser;
 
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -87,6 +94,7 @@ public class HomeController implements Initializable {
     Label change = new Label();
     HBox stats = new HBox();
     HBox headers = new HBox();
+    VBox links = new VBox();
 
     private boolean articleIsOpen = false;
     private SideDrawerController sideDrawerController;
@@ -112,6 +120,12 @@ public class HomeController implements Initializable {
     private Label ticker;
     private static boolean isBullish;
     private static boolean isDarkMode;
+
+    static HostServices hs;
+
+    public static void setEs(HostServices es){
+        hs = es;
+    }
 
 
     public static void setSetThemDarkTrue(){
@@ -280,7 +294,7 @@ public class HomeController implements Initializable {
         settingsDrawer.prefWidthProperty().bind(anchorPane.widthProperty());
 
         Label temp = new Label();
-        temp.setText("OPEN\t \tCLOSE\t \tVOLUME\t \tCURRENT\t \tCHANGE\t \tLOW\t \tHIGH");
+        temp.setText("OPEN\t \tCLOSE\t \tVOLUME\t \t \tCURRENT\t \tCHANGE\t \tLOW\t \tHIGH");
         temp.setTextFill(Paint.valueOf("white"));
 
         headers.setSpacing(10);
@@ -358,14 +372,17 @@ public class HomeController implements Initializable {
 
         stockPaneVBox = new VBox();
         stockPaneVBox.setSpacing(10);
-        stockPaneVBox.setAlignment(Pos.CENTER);
+        stockPaneVBox.setAlignment(Pos.TOP_CENTER);
         StackPane.setAlignment(stockPaneVBox, Pos.CENTER);
         stocksInfoPane.getChildren().addAll(stockPaneVBox);
         scrollPaneForStockPane.setContent(stocksInfoPane);
+        scrollPaneForStockPane.setHmax(1);
+        scrollPaneForStockPane.maxHeightProperty().bind(anchorPane.heightProperty());
         stocksInfoPane.minWidthProperty().bind(Bindings.createDoubleBinding(() ->
                 scrollPaneForStockPane.getViewportBounds().getWidth(), scrollPaneForStockPane.viewportBoundsProperty()));
         stocksInfoPane.minHeightProperty().bind(Bindings.createDoubleBinding(() ->
                 scrollPaneForStockPane.getViewportBounds().getHeight(), scrollPaneForStockPane.viewportBoundsProperty()));
+        stocksInfoPane.setMaxHeight(Double.MAX_VALUE);
 
         mainSplitPane.getItems().add(scrollPaneForStockPane);
 
@@ -411,13 +428,16 @@ public class HomeController implements Initializable {
                             linechart = new LineChart(xAxis, yAxis);
                             linechart.setTitle(selectedStock);
                             linechart.setCreateSymbols(false);
-                            linechart.setMaxSize(600,450);
+                            linechart.setMaxSize(1200,450);
                             linechart.setLegendVisible(false);
                             stockPaneVBox.getChildren().addAll(linechart);
-                            stockPaneVBox.setVgrow(linechart,Priority.ALWAYS);
+                            VBox.setVgrow(linechart,Priority.ALWAYS);
                             linechart.setLegendVisible(false);
                             stocksInfoPane.getChildren().addAll(linechart);
                             stockPaneVBox.getChildren().add(linechart);
+                            load(selectedStock);
+                            links.setAlignment(Pos.CENTER);
+
                         }
                         else {
                             linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
@@ -426,7 +446,6 @@ public class HomeController implements Initializable {
                         String graph = this.getClass().getClassLoader().getResource("graph-bullish.css").toExternalForm();
                         linechart.getStylesheets().add(graph);
                         loadGraph(selectedStock,1,"d",100);
-                        //if(!stocksInfoPane.getChildren().contains(linechart));
                         if(!stockPaneVBox.getChildren().contains(headers)){
                             stockPaneVBox.getChildren().add(headers);
                         }
@@ -440,6 +459,7 @@ public class HomeController implements Initializable {
                             stats.getChildren().add(open);
 
                             stockPaneVBox.getChildren().add(stats);
+                            stockPaneVBox.getChildren().add(links);
                             /*stats.getChildren().add(close);
                             stats.getChildren().add(volume);
                             stats.getChildren().add(current);
@@ -448,6 +468,7 @@ public class HomeController implements Initializable {
                             stats.getChildren().add(high);*/
                         }
                         else{
+                            load(selectedStock);
                             loadData(selectedStock);
                         }
                         loadStockGraph.setValue(false);
@@ -531,23 +552,38 @@ public class HomeController implements Initializable {
 
     private void loadData(String url){
         JSONObject object = StockFetcher.stockDataCurrent(url);
-        /*open.setText(object.get("open").toString());
+
+        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() +"\t \t" + object.get("high").toString());
         open.setTextFill(Paint.valueOf("white"));
-        change.setText(object.get("change").toString());
-        change.setTextFill(Paint.valueOf("white"));
-        current.setText(object.get("latestPrice").toString());
-        current.setTextFill(Paint.valueOf("white"));
-        low.setText(object.get("low").toString());
-        low.setTextFill(Paint.valueOf("white"));
-        high.setText(object.get("high").toString());
-        high.setTextFill(Paint.valueOf("white"));
-        close.setText(object.get("close").toString());
-        close.setTextFill(Paint.valueOf("white"));
-        volume.setText(object.get("latestVolume").toString());
-        volume.setTextFill(Paint.valueOf("white"));*/
+    }
 
 
-        open.setText(object.get("open").toString() + "\t \t" + object.get("close").toString() + "\t \t" + object.get("latestVolume").toString() + "\t \t" + object.get("latestPrice").toString() + "\t \t" + object.get("change").toString() + "\t \t" + object.get("low").toString() +"\t \t" + object.get("high").toString());
-        open.setTextFill(Paint.valueOf("white"));
+    private void load(String url){
+        links.getChildren().clear();
+        ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue()+url);
+        Hyperlink temp;
+        //links.getChildren().add(temp);
+        for(int i = 0; i < 5; i++){
+            NasdaqArticleParser.getArticleData(articles.get(i));
+            SentimentAnalyzer.getSentimentScore(articles.get(i));
+            final Article current = articles.get(i);
+            temp = new Hyperlink(articles.get(i).getTitle() + "\t" + articles.get(i).getSentiment());
+            temp.setOnAction((ActionEvent event) -> {
+                Hyperlink h = (Hyperlink) event.getTarget();
+                String s = current.getLink();
+                hs.showDocument(s);
+                event.consume();
+            });
+            if(temp.getText().substring(temp.getText().length()-7, temp.getText().length()).equals("bullish")){
+                temp.setTextFill(Paint.valueOf("green"));
+            }
+            else{
+                temp.setTextFill(Paint.valueOf("red"));
+            }
+
+            links.getChildren().add(temp);
+        }
+
+
     }
 }
