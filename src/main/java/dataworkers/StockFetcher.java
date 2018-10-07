@@ -1,5 +1,6 @@
 package dataworkers;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -11,7 +12,7 @@ import java.util.ArrayList;
 
 public class StockFetcher {
 
-    static ArrayList<JSONObject> stockDataHistorical(String url){
+    /*static ArrayList<JSONObject> stockDataHistorical(String url){
         ArrayList<JSONObject> stocks = new ArrayList<>();
         try {
             String test = Jsoup.connect("https://www.nasdaq.com/symbol/" + url + "/historical").get().toString();
@@ -38,12 +39,27 @@ public class StockFetcher {
             return null;
         }
         return stocks;
+    }*/
+
+    static JSONArray stockDataHistorical(String url){
+        JSONArray data;
+        try {
+            //Document test = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/chart/1y").get();
+            Document test = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/chart/1y").ignoreContentType(true).get();
+
+            data = new JSONArray(test.text());
+        }catch (Exception e){
+            //System.out.println(e.getLocalizedMessage());
+            e.printStackTrace();
+            return null;
+        }
+        return data;
     }
 
 
     static JSONObject stockDataCurrent(String url){
         try{
-            
+
 
 
 
@@ -60,7 +76,7 @@ public class StockFetcher {
 
 
     public static void main(String[]args){
-        //ArrayList<JSONObject> name = StockFetcher.stockDataHistorical("aapl");
+        JSONArray name = StockFetcher.stockDataHistorical("aapl");
         System.out.println("test");
     }
 }
