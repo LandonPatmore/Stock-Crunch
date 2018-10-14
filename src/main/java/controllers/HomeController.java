@@ -81,16 +81,16 @@ public class HomeController implements Initializable {
     ColumnConstraints gridPaneRight;
 
 
-    Label current = new Label();
-    Label open = new Label();
-    Label close = new Label();
-    Label volume = new Label();
-    Label high = new Label();
-    Label low = new Label();
-    Label change = new Label();
-    HBox stats = new HBox();
-    HBox headers = new HBox();
-    VBox links = new VBox();
+    private Label current = new Label();
+    private Label open = new Label();
+    private Label close = new Label();
+    private Label volume = new Label();
+    private Label high = new Label();
+    private Label low = new Label();
+    private Label change = new Label();
+    private HBox stats = new HBox();
+    private HBox headers = new HBox();
+    private VBox links = new VBox();
 
     private boolean articleIsOpen = false;
     private SideDrawerController sideDrawerController;
@@ -175,7 +175,7 @@ public class HomeController implements Initializable {
             Logger.getLogger(SettingsDrawerController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
+        css = getClass().getResource("/" + currentTheme).toExternalForm();
         addStyleSheets();
 
         setThemeBullish.addListener(new ChangeListener<Boolean>() {
@@ -185,19 +185,15 @@ public class HomeController implements Initializable {
                     isBullish = true;
                     if (isDarkMode) {
                         currentTheme = darkBullish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeLight.setValue(false);
-                        setSetThemeBearish(false);
                     } else {
                         currentTheme = lightBullish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeDark.setValue(false);
-                        setSetThemeBearish(false);
                     }
+
+                    clearStyleSheets();
+                    css = getClass().getResource("/" + currentTheme).toExternalForm();
+                    addStyleSheets();
+                    setThemeDark.setValue(false);
+                    setSetThemeBearish(false);
                 }
             }
         });
@@ -209,19 +205,15 @@ public class HomeController implements Initializable {
                     isBullish = false;
                     if (isDarkMode) {
                         currentTheme = darkBearish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeLight.setValue(false);
-                        setSetThemeBullish(false);
                     } else {
                         currentTheme = lightBearish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeDark.setValue(false);
-                        setSetThemeBullish(false);
                     }
+
+                    clearStyleSheets();
+                    css = getClass().getResource("/" + currentTheme).toExternalForm();
+                    addStyleSheets();
+                    setThemeDark.setValue(false);
+                    setSetThemeBullish(false);
                 }
             }
         });
@@ -233,17 +225,14 @@ public class HomeController implements Initializable {
                     isDarkMode = true;
                     if (isBullish) {
                         currentTheme = darkBullish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeLight.setValue(false);
                     } else {
                         currentTheme = darkBearish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeLight.setValue(false);
                     }
+
+                    clearStyleSheets();
+                    css = getClass().getResource("/" + currentTheme).toExternalForm();
+                    addStyleSheets();
+                    setThemeLight.setValue(false);
                 }
             }
         });
@@ -255,17 +244,14 @@ public class HomeController implements Initializable {
                     isDarkMode = false;
                     if (isBullish) {
                         currentTheme = lightBullish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeDark.setValue(false);
                     } else {
                         currentTheme = lightBearish;
-                        clearStyleSheets();
-                        css = this.getClass().getClassLoader().getResource(currentTheme).toExternalForm();
-                        addStyleSheets();
-                        setThemeDark.setValue(false);
                     }
+
+                    clearStyleSheets();
+                    css = getClass().getResource("/" + currentTheme).toExternalForm();
+                    addStyleSheets();
+                    setThemeDark.setValue(false);
                 }
             }
         });
@@ -428,7 +414,7 @@ public class HomeController implements Initializable {
                                 linechart.getData().removeAll(Collections.singleton(linechart.getData().setAll()));
                             }
                             linechart.setTitle(selectedStock);
-                            String graph = this.getClass().getClassLoader().getResource("graph-bullish.css").toExternalForm();
+                            String graph = getClass().getResource("/graph-bullish.css").toExternalForm();
                             linechart.getStylesheets().add(graph);
                             loadGraph(selectedStock);
                             if (!stockPaneVBox.getChildren().contains(headers)) {
