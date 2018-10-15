@@ -35,8 +35,6 @@ public class SentimentAnalyzer {
 
         a.setSentiment(getSentiment(articleScore));
 
-        logger.info("Sentiment: " + a.getSentiment(), false);
-
         logger.info("Finished sentiment analysis on article: " + a.getTitle(), false);
     }
 
@@ -88,6 +86,8 @@ public class SentimentAnalyzer {
 
         bullish = sentimentPct > 0;
         sentimentPct = Math.abs(sentimentPct);
+
+        logger.info("Sentiment: " + sentimentPct + "%", false);
 
         if (bullish) {
             return df.format(sentimentPct) + "% " + "bullish";

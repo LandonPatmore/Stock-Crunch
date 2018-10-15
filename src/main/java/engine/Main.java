@@ -6,9 +6,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import model.Log;
+
 import java.io.IOException;
 
 public class Main extends Application {
+    private static final Log logger = new Log(Main.class);
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -22,6 +26,8 @@ public class Main extends Application {
         Pane root = FXMLLoader.load(getClass().getResource("/Home.fxml"));
         primaryStage.setScene(new Scene(root));
         root.requestFocus();
+        logger.info("Preparing to show primary stage", false);
         primaryStage.show();
+        logger.info("Primary stage is showing", false);
     }
 }

@@ -1,5 +1,6 @@
 package dataworkers;
 
+import model.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -7,37 +8,10 @@ import org.jsoup.nodes.Document;
 import sun.java2d.jules.JulesPathBuf;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
 
 public class StockFetcher {
-
-    /*static ArrayList<JSONObject> stockDataHistorical(String url){
-        ArrayList<JSONObject> stocks = new ArrayList<>();
-        try {
-            String test = Jsoup.connect("https://www.nasdaq.com/symbol/" + url + "/historical").get().toString();
-            Document stock = Jsoup.parse(test, "UTF-8", Parser.htmlParser());
-            Elements dataTable = stock.getElementsByClass("genTable");
-            JSONObject data;
-            Element realShit = dataTable.get(0).child(0).child(1).child(1);
-
-            for(Element tr: realShit.children()){
-                data = new JSONObject();
-                if(!tr.child(0).text().equals("")){
-                    data.put("date", tr.child(0).text());
-                    data.put("open", tr.child(1).text());
-                    data.put("high", tr.child(2).text());
-                    data.put("low", tr.child(3).text());
-                    data.put("close", tr.child(4).text());
-                    data.put("volume", tr.child(5).text());
-                    stocks.add(data);
-                }
-            }
-
-        }catch (Exception e){
-            System.out.println(e.getLocalizedMessage());
-            return null;
-        }
-        return stocks;
-    }*/
+    private static final Log logger = new Log(StockFetcher.class);
 
     public static JSONArray stockDataHistorical(String url, int number, String timeframe) {
         JSONArray data;
@@ -55,12 +29,13 @@ public class StockFetcher {
         }
         try {
             //Document test = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + url + "/chart/1y").get();
-            Document test = Jsoup.connect(realURL).ignoreContentType(true).get();
+            final Document t = Jsoup.connect(realURL).ignoreContentType(true).get();
 
-            data = new JSONArray(test.text());
+            data = new JSONArray(t.text());
+
+            logger.debug("Stock historical data: " + data, false);
         } catch (Exception e) {
-            //System.out.println(e.getLocalizedMessage());
-            e.printStackTrace();
+            logger.error(e.getLocalizedMessage(),true);
             return null;
         }
         return data;
@@ -70,42 +45,42 @@ public class StockFetcher {
     public static JSONObject stockDataCurrent(String ticker) {
         JSONObject data;
         try {
-            Document rawData = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker +
+            final Document rawData = Jsoup.connect("https://api.iextrading.com/1.0/stock/" + ticker +
                     "/quote").ignoreContentType(true).get();
 
             data = new JSONObject(rawData.text());
 
+            logger.debug("Stock current data: " + data, false);
         } catch (Exception e) {
-            System.out.println(e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage(),true);
             return null;
         }
         return data;
     }
 
     public static String changeSince(String thenDate, String ticker) {
-
-        JSONArray ary = StockFetcher.stockDataHistorical(ticker, 1, "m");
-
-        double change = 0.0;
+        final JSONArray ary = StockFetcher.stockDataHistorical(ticker, 1, "m");
 
         try {
-            double[] prices = getPricesFromDate(ary, thenDate, ticker);
-            double thenPrice = prices[0];
-            double nowPrice = prices[1];
+            final double[] prices = getPricesFromDate(ary, thenDate, ticker);
+            final double thenPrice = prices[0];
+            final double nowPrice = prices[1];
 
             if (thenPrice < Double.MAX_VALUE && nowPrice < Double.MAX_VALUE) {
-                DecimalFormat df = new DecimalFormat("0.##");
-                return df.format(calculateChange(thenPrice, nowPrice)) + " %";
+                final DecimalFormat df = new DecimalFormat("0.##");
+                final String changeSince = df.format(calculateChange(thenPrice, nowPrice)) + " %";
+                logger.debug("Change since: " + changeSince, false);
+                return changeSince;
             }
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getLocalizedMessage(),true);
         }
         return null;
     }
 
     public static double[] getPricesFromDate(JSONArray obj, String date, String ticker) {
 
-        double[] prices = new double[2];
+        final double[] prices = new double[2];
         String d;
         boolean found = false;
         JSONObject cur;
@@ -125,27 +100,22 @@ public class StockFetcher {
             }
         }
 
-        if (!found)
+        if (!found) {
             prices[0] = prices[1] = Double.MAX_VALUE;
+        }
 
+        logger.debug("Prices: " + Arrays.toString(prices), false);
         return prices;
     }
 
     private static double calculateChange(double then, double now) {
-
-        if (now == 0.0)
+        if (now == 0.0) {
             return (-then * 100);
+        }
 
-        return (then - now) / now * 100;
-
-    }
-
-
-    public static void main(String[] args) {
-        System.out.println(changeSince("2018-09-07", "tsla"));
-
-        JSONObject test = StockFetcher.stockDataCurrent("aapl");
-        System.out.println("test");
+        final double change = (then - now) / now * 100;
+        logger.debug("Change: " + change, false);
+        return change;
     }
 
 }
