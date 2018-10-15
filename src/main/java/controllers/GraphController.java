@@ -1,11 +1,13 @@
 package controllers;
 
 import javafx.scene.chart.XYChart;
+import model.Log;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GraphController {
+    private static final Log logger = new Log(GraphController.class);
 
     public static XYChart.Series getGraphData(JSONArray array, int totalNum){
         XYChart.Series series = new XYChart.Series();
@@ -35,6 +37,7 @@ public class GraphController {
             }
         }
 
+        logger.info("Graph data has been retrieved.", false);
         return series;
     }
 }

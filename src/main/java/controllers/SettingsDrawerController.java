@@ -4,12 +4,14 @@ import com.jfoenix.controls.JFXToggleButton;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
+import model.Log;
 import model.Settings;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SettingsDrawerController implements Initializable  {
+    private static final Log logger = new Log(SettingsDrawerController.class);
 
     @FXML
     public AnchorPane settingsPane;
@@ -73,6 +75,8 @@ public class SettingsDrawerController implements Initializable  {
             lightToggle.setSelected(true);
             darkToggle.setSelected(false);
         }
+
+        logger.info("SettingsDrawerController has been intialized.", false);
     }
 
 }

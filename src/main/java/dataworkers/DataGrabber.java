@@ -3,6 +3,8 @@ package dataworkers;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import model.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.parser.Parser;
@@ -10,6 +12,7 @@ import org.jsoup.parser.Parser;
 import java.io.IOException;
 
 public class DataGrabber {
+    private static final Log logger = new Log(DataGrabber.class);
 
     /**
      * Grabs JSON data
@@ -20,9 +23,10 @@ public class DataGrabber {
     public static JsonNode jsonGrabber(String URL) {
         try {
             final HttpResponse<JsonNode> response = Unirest.get(URL).asJson();
+            logger.info("JSON data has been retrieved.", false);
             return response.getBody();
-        } catch (Exception e){
-            System.out.println(e.getLocalizedMessage());
+        } catch (UnirestException e){
+            logger.error(e.getLocalizedMessage(), true);
             return null;
         }
     }
@@ -36,10 +40,11 @@ public class DataGrabber {
     public static Document xmlGrabber(String URL) {
         try {
             final HttpResponse<String> response = Unirest.get(URL).asString();
-
-            return Jsoup.parse(response.getBody(), "", Parser.xmlParser());
-        } catch (Exception e){
-            System.out.println(e.getLocalizedMessage());
+            final Document document = Jsoup.parse(response.getBody(), "", Parser.xmlParser());
+            logger.info("XML data has been retrieved.", false);
+            return document;
+        } catch (UnirestException e){
+            logger.error(e.getLocalizedMessage(), true);
             return null;
         }
     }
@@ -52,9 +57,11 @@ public class DataGrabber {
      */
     public static Document htmlGrabber(String url) {
         try {
-            return Jsoup.connect(url).get();
+            final Document document = Jsoup.connect(url).get();
+            logger.info("HTML data has been retrieved.", false);
+            return document;
         } catch (IOException e){
-            System.out.println(e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage(), true);
             return null;
         }
     }

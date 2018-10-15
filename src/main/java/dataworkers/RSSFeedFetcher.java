@@ -2,6 +2,7 @@ package dataworkers;
 
 import dataobjects.Article;
 import dataobjects.RSSFeedProvider;
+import model.Log;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -13,6 +14,7 @@ import org.jsoup.select.Elements;
 import java.util.ArrayList;
 
 public class RSSFeedFetcher {
+    private static final Log logger = new Log(RSSFeedFetcher.class);
 
     private static final DateTimeParser[] parsers = {
             DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss z").getParser(),
@@ -42,6 +44,8 @@ public class RSSFeedFetcher {
 
                 articleList.add(new Article(title, link, pubDate, provider));
             }
+
+            logger.info("Articles retrieved: " + articleList.size(), false);
         }
 
         return articleList;

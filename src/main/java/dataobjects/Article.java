@@ -20,7 +20,7 @@ public class Article {
     private String author;
     private Elements body;
     private String copyright;
-    private ArticleSentiment sentiment;
+    private String sentiment;
     private Image image;
 
     // TODO: Get images from article as well
@@ -83,9 +83,9 @@ public class Article {
         return providerName;
     }
 
-    public void setSentiment(ArticleSentiment sentiment) { this.sentiment = sentiment;}
+    public void setSentiment(String sentiment) { this.sentiment = sentiment;}
 
-    public String getSentiment() { return sentiment.getSentiment(); }
+    public String getSentiment() { return sentiment; }
 
     public String getDateForChange(){
         if(dateTime.getDayOfMonth() < 10)

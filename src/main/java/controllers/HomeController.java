@@ -34,6 +34,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.text.Text;
+import model.Log;
 import model.Settings;
 import org.json.JSONObject;
 import parsers.ArticleParser;
@@ -49,6 +50,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class HomeController implements Initializable {
+    private static final Log logger = new Log(HomeController.class);
 
     @FXML
     AnchorPane anchorPane;
@@ -463,6 +465,8 @@ public class HomeController implements Initializable {
                 }
             }
         });
+
+        logger.info("HomeController has been initialized.", false);
     }
 
     private void addStyleSheets() {

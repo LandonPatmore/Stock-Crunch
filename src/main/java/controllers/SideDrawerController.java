@@ -23,6 +23,7 @@ import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import model.Log;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -32,6 +33,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class SideDrawerController implements Initializable {
+    private static final Log logger = new Log(SideDrawerController.class);
 
     @FXML
     public JFXListView listView;
@@ -85,6 +87,7 @@ public class SideDrawerController implements Initializable {
         listView.setCellFactory(param -> new deletableCell());
         //listView.setExpanded(true);
         //listView.setVerticalGap(20.0);
+        logger.info("SideDrawerController has been initialized.",false);
     }
 
     static class deletableCell extends ListCell<String> {

@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class Settings {
+    private static final Log logger = new Log(Settings.class);
 
     private static final Properties properties = new Properties();
     private static final InputStream stream = Settings.class.getResourceAsStream("/settings.properties");
@@ -17,9 +18,10 @@ public class Settings {
     public static boolean loadSettings(){
         try {
             properties.load(stream);
+            logger.info("Settings have been loaded.", false);
             return true;
         } catch (IOException e){
-            System.out.println(e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage(), true);
             return false;
         }
     }
@@ -31,10 +33,11 @@ public class Settings {
     public static boolean saveSettings(){
         try {
             properties.store(new FileWriter(Settings.class.getResource("/settings.properties").getPath()), null);
+            logger.info("Settings have been saved.", false);
             return true;
         } catch (IOException e){
-            System.out.println(e.getLocalizedMessage());
-            // TODO: Have properties set to default
+            logger.error(e.getLocalizedMessage(), true);
+            // TODO: Have properties set to default and alert user
             return false;
         }
     }
