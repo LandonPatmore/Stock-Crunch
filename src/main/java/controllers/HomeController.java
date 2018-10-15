@@ -424,6 +424,7 @@ public class HomeController implements Initializable {
                                 NumberAxis yAxis = new NumberAxis();
                                 yAxis.setForceZeroInRange(false);
                                 linechart = new LineChart(xAxis, yAxis);
+                                linechart.setAnimated(false);
                                 linechart.setTitle(selectedStock);
                                 linechart.setCreateSymbols(false);
                                 linechart.setMaxSize(1200, 450);
@@ -433,7 +434,7 @@ public class HomeController implements Initializable {
                                 linechart.setLegendVisible(false);
                                 stocksInfoPane.getChildren().addAll(linechart);
                                 stockPaneVBox.getChildren().add(linechart);
-                                sentimentAnalysis(selectedStock);
+//                                sentimentAnalysis(selectedStock);
                                 links.setAlignment(Pos.CENTER);
 
                             } else {
@@ -456,7 +457,7 @@ public class HomeController implements Initializable {
                                 stockPaneVBox.getChildren().add(links);
 
                             } else {
-                                sentimentAnalysis(selectedStock);
+//                                sentimentAnalysis(selectedStock);
                                 loadData(selectedStock);
                             }
                             loadStockGraph.setValue(false);
@@ -539,8 +540,8 @@ public class HomeController implements Initializable {
     private void loadGraph(String url) {
         links.getChildren().clear();
         Platform.runLater(() -> {
-            linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, 1, "d"), 100));
             linechart.setVisible(true);
+            linechart.getData().add(GraphController.getGraphData(StockFetcher.stockDataHistorical(url, 1, "d"), 100));
         });
     }
 
