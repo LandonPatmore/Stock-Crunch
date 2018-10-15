@@ -19,15 +19,21 @@ public class RSSFeedFetcher {
             DateTimeFormat.forPattern("EEE, dd MMM YYYY HH:mm:ss Z").getParser()};
     private static final DateTimeFormatter formatter = new DateTimeFormatterBuilder().append(null, parsers).toFormatter();
 
-    public static ArrayList<Article> grabArticles(RSSFeedProvider provider, RSSFeedProvider providerURL, String appendedData) {
+    /**
+     * Grabs a list of articles from a RSS feed
+     *
+     * @param provider service the feed is from
+     * @param providerURL url of the feed
+     * @param queryString query data
+     * @return list of articles
+     */
+    public static ArrayList<Article> grabArticles(RSSFeedProvider provider, RSSFeedProvider providerURL, String queryString) {
         final ArrayList<Article> articleList = new ArrayList<>();
-        final Document xml = DataFetcher.xmlGrabber(providerURL.getValue() + appendedData);
+        final Document xml = DataGrabber.xmlGrabber(providerURL.getValue() + queryString);
 
         if (xml != null) {
 
             final Elements articles = xml.select("channel").first().select("item");
-
-
 
             for (Element e : articles) {
                 final String title = e.select("title").first().text();

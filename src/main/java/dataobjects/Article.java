@@ -4,8 +4,6 @@ import javafx.scene.image.Image;
 import org.joda.time.DateTime;
 import org.jsoup.select.Elements;
 
-import java.text.DecimalFormat;
-
 public class Article {
 
     /**
@@ -19,7 +17,6 @@ public class Article {
     /**
      * Data added later after parsing
      */
-
     private String author;
     private Elements body;
     private String copyright;

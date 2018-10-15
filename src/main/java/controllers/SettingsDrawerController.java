@@ -1,7 +1,6 @@
 package controllers;
 
 import com.jfoenix.controls.JFXToggleButton;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;

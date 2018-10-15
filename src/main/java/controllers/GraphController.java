@@ -1,7 +1,5 @@
 package controllers;
 
-import javafx.fxml.FXML;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.XYChart;
 import org.json.JSONArray;
 import org.json.JSONException;

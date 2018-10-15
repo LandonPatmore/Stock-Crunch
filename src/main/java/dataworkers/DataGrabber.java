@@ -9,10 +9,14 @@ import org.jsoup.parser.Parser;
 
 import java.io.IOException;
 
-public class DataFetcher {
+public class DataGrabber {
 
-    // TODO: Add authentication as well for endpoints
-
+    /**
+     * Grabs JSON data
+     *
+     * @param URL url to grab data from
+     * @return JsonNode
+     */
     public static JsonNode jsonGrabber(String URL) {
         try {
             final HttpResponse<JsonNode> response = Unirest.get(URL).asJson();
@@ -23,6 +27,12 @@ public class DataFetcher {
         }
     }
 
+    /**
+     * Grabs XML data
+     *
+     * @param URL url to grab data from
+     * @return Document
+     */
     public static Document xmlGrabber(String URL) {
         try {
             final HttpResponse<String> response = Unirest.get(URL).asString();
@@ -34,6 +44,12 @@ public class DataFetcher {
         }
     }
 
+    /**
+     * Grabs HTML data
+     *
+     * @param url url to grab data from
+     * @return Document
+     */
     public static Document htmlGrabber(String url) {
         try {
             return Jsoup.connect(url).get();

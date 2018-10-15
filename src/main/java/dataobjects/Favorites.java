@@ -41,8 +41,7 @@ public class Favorites {
                 o.writeObject(new ArrayList<>(favorites));
 
                 o.close();
-
-                o.close();
+                
                 f.close();
             } catch (Exception e) {
                 System.out.println(e);

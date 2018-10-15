@@ -18,7 +18,7 @@ public class Main extends Application {
         primaryStage.setMinHeight(400);
         primaryStage.setMinWidth(600);
         HomeController.setEs(getHostServices());
-        primaryStage.setTitle("Stock Church");
+        primaryStage.setTitle("Stock Crunch");
         Pane root = FXMLLoader.load(getClass().getResource("/Home.fxml"));
         primaryStage.setScene(new Scene(root));
         root.requestFocus();

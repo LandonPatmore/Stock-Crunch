@@ -36,7 +36,7 @@ import javafx.scene.web.WebView;
 import javafx.scene.text.Text;
 import model.Settings;
 import org.json.JSONObject;
-import parsers.NasdaqArticleParser;
+import parsers.ArticleParser;
 
 import java.io.IOException;
 import java.net.URL;
@@ -101,10 +101,10 @@ public class HomeController implements Initializable {
     private String lightBearish = "bearish-light.css";
     private String currentTheme = darkBullish;
     private String css;
-    private static BooleanProperty setThemeDark = new SimpleBooleanProperty(false);
-    private static BooleanProperty setThemeLight = new SimpleBooleanProperty(false);
-    private static BooleanProperty setThemeBullish = new SimpleBooleanProperty(false);
-    private static BooleanProperty setThemeBearish = new SimpleBooleanProperty(false);
+    private static BooleanProperty themeDark = new SimpleBooleanProperty(false);
+    private static BooleanProperty themeLight = new SimpleBooleanProperty(false);
+    private static BooleanProperty themeBullish = new SimpleBooleanProperty(false);
+    private static BooleanProperty themeBearish = new SimpleBooleanProperty(false);
     private JFXTextField stockSearchField;
     private ScrollPane scrollPaneForStockPane = new ScrollPane();
     private StackPane stocksInfoPane = new StackPane();
@@ -125,12 +125,12 @@ public class HomeController implements Initializable {
 
 
     public static void setSetThemDarkTrue() {
-        setThemeDark.setValue(true);
+        themeDark.setValue(true);
         Settings.setTheme("dark");
     }
 
     public static void setSetThemLightTrue() {
-        setThemeLight.setValue(true);
+        themeLight.setValue(true);
         Settings.setTheme("light");
     }
 
@@ -142,12 +142,36 @@ public class HomeController implements Initializable {
         loadStockGraph.setValue(true);
     }
 
-    public static void setSetThemeBullish(Boolean x) {
-        setThemeBullish.setValue(x);
+    public static void setThemeBullish(Boolean x) {
+        themeBullish.setValue(x);
     }
 
-    public static void setSetThemeBearish(Boolean x) {
-        setThemeBearish.setValue(x);
+    public static void setThemeBearish(Boolean x) {
+        themeBearish.setValue(x);
+    }
+
+    private void setThemeing(boolean bullish, boolean dark){
+        clearStyleSheets();
+        css = getClass().getResource("/" + currentTheme).toExternalForm();
+        addStyleSheets();
+
+
+        if(bullish){
+            setThemeBullish(bullish);
+            setThemeBearish(!bullish);
+        } else {
+            setThemeBullish(!bullish);
+            setThemeBearish(bullish);
+        }
+
+        if(dark){
+            setSetThemDarkTrue();
+        } else {
+            setSetThemLightTrue();
+        }
+
+        themeDark.setValue(false);
+        setThemeBearish(false);
     }
 
     @Override
@@ -178,7 +202,7 @@ public class HomeController implements Initializable {
         css = getClass().getResource("/" + currentTheme).toExternalForm();
         addStyleSheets();
 
-        setThemeBullish.addListener(new ChangeListener<Boolean>() {
+        themeBullish.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
@@ -192,13 +216,13 @@ public class HomeController implements Initializable {
                     clearStyleSheets();
                     css = getClass().getResource("/" + currentTheme).toExternalForm();
                     addStyleSheets();
-                    setThemeDark.setValue(false);
-                    setSetThemeBearish(false);
+                    themeDark.setValue(false);
+                    setThemeBearish(false);
                 }
             }
         });
 
-        setThemeBearish.addListener(new ChangeListener<Boolean>() {
+        themeBearish.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
@@ -212,13 +236,13 @@ public class HomeController implements Initializable {
                     clearStyleSheets();
                     css = getClass().getResource("/" + currentTheme).toExternalForm();
                     addStyleSheets();
-                    setThemeDark.setValue(false);
-                    setSetThemeBullish(false);
+                    themeDark.setValue(false);
+                    setThemeBullish(false);
                 }
             }
         });
 
-        setThemeDark.addListener(new ChangeListener<Boolean>() {
+        themeDark.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
@@ -232,12 +256,12 @@ public class HomeController implements Initializable {
                     clearStyleSheets();
                     css = getClass().getResource("/" + currentTheme).toExternalForm();
                     addStyleSheets();
-                    setThemeLight.setValue(false);
+                    themeLight.setValue(false);
                 }
             }
         });
 
-        setThemeLight.addListener(new ChangeListener<Boolean>() {
+        themeLight.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
@@ -251,7 +275,7 @@ public class HomeController implements Initializable {
                     clearStyleSheets();
                     css = getClass().getResource("/" + currentTheme).toExternalForm();
                     addStyleSheets();
-                    setThemeDark.setValue(false);
+                    themeDark.setValue(false);
                 }
             }
         });
@@ -358,9 +382,9 @@ public class HomeController implements Initializable {
         mainSplitPane.getItems().add(scrollPaneForStockPane);
 
         if ("dark".equals(Settings.getTheme())) {
-            setThemeDark.setValue(true);
+            themeDark.setValue(true);
         } else {
-            setThemeLight.setValue(true);
+            themeLight.setValue(true);
         }
 
         //((NumberAxis) linechart.getYAxis()).setForceZeroInRange(false);
@@ -554,7 +578,7 @@ public class HomeController implements Initializable {
             protected Void call() {
                 ArrayList<Article> articles = RSSFeedFetcher.grabArticles(RSSFeedProvider.NASDAQ, RSSFeedProvider.NASDAQ_RSS_FEED, NasdaqArticleRSSFeed.SYMBOL.getValue() + ticker);
                 for (int i = 0; i < (articles.size() > 5 ? 5 : articles.size()); i++) {
-                    NasdaqArticleParser.getArticleData(articles.get(i));
+                    ArticleParser.nasdaqParser(articles.get(i));
                     SentimentAnalyzer.getSentimentScore(articles.get(i));
                 }
                 Platform.runLater(() -> loadArticleData(articles));

@@ -68,19 +68,16 @@ public class SideDrawerController implements Initializable {
         }
     }
 
-
     @FXML
     public static void openFavorite(ActionEvent event){
         selectedStock = ((Control)event.getSource()).getId();
         HomeController.setLoadStockGraph();
         if(isBullish(selectedStock)){
-            HomeController.setSetThemeBullish(true);
+            HomeController.setThemeBullish(true);
         }else{
-            HomeController.setSetThemeBearish(true);
+            HomeController.setThemeBearish(true);
         }
     }
-
-
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -95,8 +92,8 @@ public class SideDrawerController implements Initializable {
         JFXButton text = new JFXButton("");
         FontAwesomeIconView timesIcon = new FontAwesomeIconView(FontAwesomeIcon.TIMES);
         private static BooleanProperty openedSideDrawer = new SimpleBooleanProperty(false);
-        private String bullish = this.getClass().getClassLoader().getResource("favorites-bullish.css").toExternalForm();
-        private String bearish = this.getClass().getClassLoader().getResource("favorites-bearish.css").toExternalForm();
+        private String bullish = getClass().getResource("/favorites-bullish.css").toExternalForm();
+        private String bearish = getClass().getResource("/favorites-bearish.css").toExternalForm();
 
         public static void setOpenedSideDrawer(Boolean x) {
             openedSideDrawer.setValue(x);
