@@ -29,10 +29,11 @@ public class Favorites {
     }
 
     public static void serializeData(ObservableList<String> favorites) {
-        if (!checkFileExists()) {
-            createFavoritesFile();
-        }
-        Platform.runLater(() -> {
+        new Thread(() -> {
+            if (!checkFileExists()) {
+                createFavoritesFile();
+            }
+
             try {
                 final FileOutputStream f = new FileOutputStream(file);
                 final ObjectOutputStream o = new ObjectOutputStream(f);
@@ -46,7 +47,7 @@ public class Favorites {
             } catch (IOException e) {
                 logger.error(e.getLocalizedMessage(), true);
             }
-        });
+        }).start();
     }
 
     public static ObservableList<String> readData() {

@@ -182,103 +182,86 @@ public class HomeController implements Initializable {
 
         //Load side Drawer FXML
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Side_Drawer.fxml"));
-            VBox box = loader.load();
+            final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Side_Drawer.fxml"));
+            final VBox box = loader.load();
             sideDrawerController = loader.getController();
             sideDrawerController.dashboardDrawerVBox.maxHeightProperty().bind(anchorPane.heightProperty());
             sideDrawer.setSidePane(box);
         } catch (IOException ex) {
-            Logger.getLogger(SideDrawerController.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getLocalizedMessage(), true);
         }
         //Load settings top drawer
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Settings_Drawer.fxml"));
-            AnchorPane ap = loader.load();
+            final FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("Settings_Drawer.fxml"));
+            final AnchorPane ap = loader.load();
             settingsDrawerController = loader.getController();
             settingsDrawerController.settingsPane.maxWidthProperty().bind(anchorPane.widthProperty());
             settingsDrawer.setSidePane(ap);
         } catch (IOException ex) {
-            Logger.getLogger(SettingsDrawerController.class.getName()).log(Level.SEVERE, null, ex);
+            logger.error(ex.getLocalizedMessage(), true);
         }
 
-        css = getClass().getResource("/" + currentTheme).toExternalForm();
         addStyleSheets();
 
-        themeBullish.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    isBullish = true;
-                    if (isDarkMode) {
-                        currentTheme = darkBullish;
-                    } else {
-                        currentTheme = lightBullish;
-                    }
-
-                    clearStyleSheets();
-                    css = getClass().getResource("/" + currentTheme).toExternalForm();
-                    addStyleSheets();
-                    themeDark.setValue(false);
-                    setThemeBearish(false);
+        themeBullish.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                isBullish = true;
+                if (isDarkMode) {
+                    currentTheme = darkBullish;
+                } else {
+                    currentTheme = lightBullish;
                 }
+
+                clearStyleSheets();
+                addStyleSheets();
+                themeDark.setValue(false);
+                setThemeBearish(false);
             }
         });
 
-        themeBearish.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    isBullish = false;
-                    if (isDarkMode) {
-                        currentTheme = darkBearish;
-                    } else {
-                        currentTheme = lightBearish;
-                    }
-
-                    clearStyleSheets();
-                    css = getClass().getResource("/" + currentTheme).toExternalForm();
-                    addStyleSheets();
-                    themeDark.setValue(false);
-                    setThemeBullish(false);
+        themeBearish.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                isBullish = false;
+                if (isDarkMode) {
+                    currentTheme = darkBearish;
+                } else {
+                    currentTheme = lightBearish;
                 }
+
+                clearStyleSheets();
+                addStyleSheets();
+                themeDark.setValue(false);
+                setThemeBullish(false);
             }
         });
 
-        themeDark.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    isDarkMode = true;
-                    if (isBullish) {
-                        currentTheme = darkBullish;
-                    } else {
-                        currentTheme = darkBearish;
-                    }
-
-                    clearStyleSheets();
-                    css = getClass().getResource("/" + currentTheme).toExternalForm();
-                    addStyleSheets();
-                    themeLight.setValue(false);
+        themeDark.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                isDarkMode = true;
+                if (isBullish) {
+                    currentTheme = darkBullish;
+                } else {
+                    currentTheme = darkBearish;
                 }
+
+                clearStyleSheets();
+                addStyleSheets();
+                themeLight.setValue(false);
             }
         });
 
-        themeLight.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    isDarkMode = false;
-                    if (isBullish) {
-                        currentTheme = lightBullish;
-                    } else {
-                        currentTheme = lightBearish;
-                    }
-
-                    clearStyleSheets();
-                    css = getClass().getResource("/" + currentTheme).toExternalForm();
-                    addStyleSheets();
-                    themeDark.setValue(false);
+        themeLight.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                isDarkMode = false;
+                if (isBullish) {
+                    currentTheme = lightBullish;
+                } else {
+                    currentTheme = lightBearish;
                 }
+
+                clearStyleSheets();
+                addStyleSheets();
+                themeDark.setValue(false);
             }
         });
 
@@ -471,6 +454,8 @@ public class HomeController implements Initializable {
     }
 
     private void addStyleSheets() {
+        css = getClass().getResource("/" + currentTheme).toExternalForm();
+
         anchorPane.getStylesheets().add(css);
         mainSplitPane.getStylesheets().add(css);
         topBarGridPane.getStylesheets().add(css);
